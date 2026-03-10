@@ -1,0 +1,44 @@
+# ============================================================
+# Yacht Harbours — www.yachtharbours.com
+# robots.txt — Search Engine Instructions
+# ============================================================
+
+# Allow all well-behaved crawlers
+User-agent: *
+Allow: /
+
+# Disallow internal/admin paths (add these when you build a backend)
+# Disallow: /api/
+# Disallow: /admin/
+# Disallow: /dashboard/
+
+# Sitemap location (update once sitemap.xml is generated)
+Sitemap: https://www.yachtharbours.com/sitemap.xml
+
+# Polite crawl delay (1 second between requests)
+Crawl-delay: 1
+
+# ── Specific bot instructions ─────────────────────────────
+
+# Google — no crawl delay needed, Google ignores it anyway
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block known bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

@@ -1,0 +1,60 @@
+# ============================================================
+# Yacht Harbours — www.yachtharbours.com
+# Security & Cache Headers
+# Compatible with: Vercel, Cloudflare Pages, Netlify
+# ============================================================
+
+/*
+  # ── SECURITY ──────────────────────────────────────────────
+  # Forces HTTPS for 2 years, includes subdomains, eligible for preload list
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+
+  # Prevents site being embedded in iframes on other domains (clickjacking)
+  X-Frame-Options: SAMEORIGIN
+
+  # Stops browsers guessing file types (MIME sniffing attacks)
+  X-Content-Type-Options: nosniff
+
+  # Legacy XSS filter (still respected by some older browsers)
+  X-XSS-Protection: 1; mode=block
+
+  # Controls referrer info sent with outgoing requests
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Disable unused browser features
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(self), usb=(), bluetooth=()
+
+  # Content Security Policy — whitelist only what the site actually uses:
+  #   - Leaflet maps (unpkg.com CDN)
+  #   - Stripe.js payment processing
+  #   - Google Fonts
+  #   - QR code image API (api.qrserver.com)
+  #   - CartoDB dark map tiles
+  Content-Security-Policy: default-src 'self' https:; script-src 'self' 'unsafe-inline' https://unpkg.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://api.stripe.com https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org https://api.qrserver.com; frame-src https://js.stripe.com; worker-src 'none';
+
+  # ── PERFORMANCE ──────────────────────────────────────────
+  # Default: revalidate every hour (good for the SPA index.html)
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# ── INDEX / HTML — never cache stale ──────────────────────
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# ── STATIC ASSETS — cache for 1 year ──────────────────────
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ── FONTS — cache for 1 year ──────────────────────────────
+*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+*.woff
+  Cache-Control: public, max-age=31536000, immutable
+
+# ── ROBOTS & SITEMAP ──────────────────────────────────────
+/robots.txt
+  Cache-Control: public, max-age=86400
+
+/sitemap.xml
+  Cache-Control: public, max-age=86400
+  Content-Type: application/xml

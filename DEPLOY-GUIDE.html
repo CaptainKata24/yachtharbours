@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yacht Harbours — Vercel Deployment Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--deep:#0d2044;--ocean:#1a4a7a;--aqua:#06b6d4;--gold:#c9a84c;--gold-l:#e8c97a;--white:#fff;--muted:#8fa3bb;--green:#22c55e;--red:#ef4444;--border:rgba(255,255,255,.08);--card:rgba(13,32,68,.8);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--white);line-height:1.6;}
+.bg{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#050e1f 0%,#0a1e3a 50%,#091428 100%);}
+.stars{position:fixed;inset:0;z-index:0;background-image:radial-gradient(1px 1px at 12% 8%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 65% 5%,rgba(255,255,255,.4),transparent),radial-gradient(2px 2px at 40% 2%,rgba(201,168,76,.7),transparent),radial-gradient(1px 1px at 85% 12%,rgba(255,255,255,.3),transparent),radial-gradient(1px 1px at 28% 18%,rgba(6,182,212,.4),transparent);}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:60px 24px 80px;}
+
+/* Header */
+.guide-header{text-align:center;padding:50px 0 60px;border-bottom:1px solid var(--border);margin-bottom:60px;}
+.guide-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 16px;border:1px solid rgba(201,168,76,.3);border-radius:100px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;background:rgba(201,168,76,.05);}
+.guide-header h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:700;line-height:1.1;margin-bottom:14px;}
+.guide-header h1 em{font-style:italic;color:var(--gold);}
+.guide-header p{font-size:15px;color:var(--muted);max-width:520px;margin:0 auto 28px;}
+.time-est{display:inline-flex;align-items:center;gap:22px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 24px;}
+.te{text-align:center;}
+.te-n{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--gold);}
+.te-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.te-div{width:1px;height:30px;background:var(--border);}
+
+/* Progress bar */
+.progress-bar{display:flex;align-items:center;gap:0;margin-bottom:50px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;overflow-x:auto;}
+.pb-step{display:flex;align-items:center;gap:0;flex-shrink:0;}
+.pb-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--border);color:var(--muted);flex-shrink:0;}
+.pb-dot.done{background:var(--green);border-color:var(--green);color:#fff;}
+.pb-dot.active{background:var(--gold);border-color:var(--gold);color:var(--navy);}
+.pb-lbl{font-size:10px;color:var(--muted);margin-left:6px;white-space:nowrap;}
+.pb-line{width:24px;height:2px;background:var(--border);margin:0 6px;flex-shrink:0;}
+
+/* Section */
+.section{margin-bottom:50px;}
+.section-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.section h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;margin-bottom:6px;line-height:1.2;}
+.section h2 em{font-style:italic;color:var(--aqua);}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7;}
+.section-divider{height:1px;background:linear-gradient(90deg,rgba(201,168,76,.3),rgba(6,182,212,.2),transparent);margin-bottom:24px;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-bottom:14px;backdrop-filter:blur(10px);}
+.card.highlight{border-color:rgba(201,168,76,.25);background:linear-gradient(135deg,rgba(13,32,68,.9),rgba(20,45,90,.6));}
+.card.success{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.04);}
+.card.warning{border-color:rgba(234,179,8,.25);background:rgba(234,179,8,.04);}
+.card h3{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+.card p:last-child{margin-bottom:0;}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:14px;}
+.step{display:flex;gap:16px;align-items:flex-start;}
+.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px;}
+.step-body{flex:1;}
+.step-title{font-weight:600;font-size:14px;margin-bottom:4px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+.step-action{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:7px 14px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:5px;font-size:12px;font-weight:600;color:var(--gold);text-decoration:none;cursor:pointer;}
+.step-action:hover{background:rgba(201,168,76,.2);}
+
+/* Code blocks */
+.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:16px 18px;margin:12px 0;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;overflow-x:auto;position:relative;}
+.code-block .cb-label{position:absolute;top:8px;right:12px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.25);font-family:'Barlow',sans-serif;}
+.code-block .kw{color:#06b6d4;}
+.code-block .str{color:#c9a84c;}
+.code-block .cmt{color:rgba(255,255,255,.3);}
+.code-block .val{color:#22c55e;}
+
+/* File tree */
+.file-tree{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2;}
+.ft-folder{color:var(--gold);}
+.ft-file{color:var(--white);}
+.ft-file.key{color:var(--aqua);}
+.ft-note{color:rgba(255,255,255,.3);font-size:11px;font-family:'Barlow',sans-serif;margin-left:8px;}
+.ft-indent{margin-left:22px;}
+
+/* DNS table */
+.dns-table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0;}
+.dns-table th{text-align:left;padding:8px 12px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--border);}
+.dns-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--muted);}
+.dns-table td:first-child{color:var(--white);font-weight:600;}
+.dns-table td code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--aqua);background:rgba(6,182,212,.08);padding:2px 6px;border-radius:3px;}
+.dns-table tr:hover td{background:rgba(255,255,255,.02);}
+
+/* Checklist */
+.checklist{list-style:none;}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:var(--muted);}
+.checklist li:last-child{border-bottom:none;}
+.chk{width:18px;height:18px;border-radius:4px;border:2px solid rgba(34,197,94,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:10px;color:var(--green);}
+.chk.done{background:rgba(34,197,94,.15);}
+.cl-label{flex:1;line-height:1.6;}
+.cl-label strong{color:var(--white);}
+.cl-badge{padding:1px 7px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-left:6px;}
+.b-free{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}
+.b-req{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);}
+.b-later{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid rgba(255,255,255,.1);}
+
+/* Cost summary */
+.cost-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;}
+.cost-row:last-child{border-bottom:none;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;margin-top:4px;}
+.cost-label{color:var(--muted);}
+.cost-price{font-weight:600;color:var(--green);}
+.cost-price.total{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:var(--gold);}
+.cost-note{font-size:11px;color:var(--muted);margin-left:8px;}
+
+/* Alert box */
+.alert{display:flex;gap:12px;padding:14px 16px;border-radius:8px;font-size:13px;margin:14px 0;}
+.alert.info{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);color:var(--aqua);}
+.alert.tip{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);color:var(--gold);}
+.alert.warn{background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.2);color:#eab308;}
+.alert-icon{font-size:17px;flex-shrink:0;margin-top:1px;}
+.alert-body{color:var(--muted);line-height:1.7;}
+.alert-body strong{color:var(--white);}
+
+/* Footer */
+.guide-footer{text-align:center;padding:40px 0 0;border-top:1px solid var(--border);margin-top:60px;}
+.guide-footer p{font-size:12px;color:var(--muted);}
+.guide-footer p span{color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="stars"></div>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="guide-header">
+    <div class="guide-badge">⚓ Deployment Guide</div>
+    <h1>Deploy <em>Yacht Harbours</em><br>to Vercel + Cloudflare</h1>
+    <p>Complete step-by-step guide to go live at www.yachtharbours.com. No coding required. Everything is already built.</p>
+    <div class="time-est">
+      <div class="te"><div class="te-n">~30</div><div class="te-l">Minutes total</div></div>
+      <div class="te-div"></div>
+      <div class="te"><div class="te-n">6</div><div class="te-l">Steps</div></div>
+      <div class="te-div"></div>
+      <div class="te"><div class="te-n">$0</div><div class="te-l">Hosting cost</div></div>
+      <div class="te-div"></div>
+      <div class="te"><div class="te-n">~$15</div><div class="te-l">Per year total</div></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <div class="pb-step"><div class="pb-dot active">1</div><span class="pb-lbl">Files Ready</span></div>
+    <div class="pb-line"></div>
+    <div class="pb-step"><div class="pb-dot">2</div><span class="pb-lbl">GitHub</span></div>
+    <div class="pb-line"></div>
+    <div class="pb-step"><div class="pb-dot">3</div><span class="pb-lbl">Vercel Deploy</span></div>
+    <div class="pb-line"></div>
+    <div class="pb-step"><div class="pb-dot">4</div><span class="pb-lbl">Cloudflare DNS</span></div>
+    <div class="pb-line"></div>
+    <div class="pb-step"><div class="pb-dot">5</div><span class="pb-lbl">SSL + Security</span></div>
+    <div class="pb-line"></div>
+    <div class="pb-step"><div class="pb-dot">6</div><span class="pb-lbl">Go Live ✓</span></div>
+  </div>
+
+  <!-- STEP 0: Your Files -->
+  <div class="section">
+    <div class="section-num">Step 0 — Already Done</div>
+    <h2>Your <em>Files</em> Are Ready</h2>
+    <p class="section-sub">All 6 files have been built and configured. This is your complete deployment package.</p>
+    <div class="section-divider"></div>
+
+    <div class="file-tree">
+      <div><span class="ft-folder">📁 yachtharbours/</span> <span class="ft-note">← Create this folder on your computer</span></div>
+      <div class="ft-indent"><span class="ft-file key">📄 index.html</span> <span class="ft-note">← Your complete website (399 KB)</span></div>
+      <div class="ft-indent"><span class="ft-file key">⚙️ vercel.json</span> <span class="ft-note">← Vercel routing + security config</span></div>
+      <div class="ft-indent"><span class="ft-file key">🔒 _headers</span> <span class="ft-note">← HTTP security & cache headers</span></div>
+      <div class="ft-indent"><span class="ft-file key">↩️ _redirects</span> <span class="ft-note">← URL redirects + SPA routing</span></div>
+      <div class="ft-indent"><span class="ft-file key">🤖 robots.txt</span> <span class="ft-note">← Search engine instructions</span></div>
+      <div class="ft-indent"><span class="ft-file key">🗺️ sitemap.xml</span> <span class="ft-note">← Google sitemap (all pages)</span></div>
+    </div>
+
+    <div class="alert tip" style="margin-top:16px">
+      <div class="alert-icon">💡</div>
+      <div class="alert-body"><strong>Download all 6 files</strong> from Claude's file panel above, then create a folder called <code style="color:var(--gold)">yachtharbours</code> on your desktop and place all files inside it.</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: GitHub -->
+  <div class="section">
+    <div class="section-num">Step 1 — GitHub (5 minutes)</div>
+    <h2>Create a <em>GitHub</em> Repository</h2>
+    <p class="section-sub">GitHub stores your site files. Vercel watches GitHub — every time you update a file, your site automatically redeploys in seconds. This is how professional sites are managed.</p>
+    <div class="section-divider"></div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Create a free GitHub account</div>
+          <div class="step-desc">Visit github.com and sign up with your email address. It's completely free.</div>
+          <a class="step-action" href="https://github.com/join" target="_blank">→ github.com/join</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Create a new repository</div>
+          <div class="step-desc">Click the green <strong>"New"</strong> button on your GitHub dashboard. Set the repository name to <code style="color:var(--aqua)">yachtharbours</code>. Set visibility to <strong>Public</strong>. Click <strong>"Create repository"</strong>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Upload your 6 files</div>
+          <div class="step-desc">On the new repository page, click <strong>"uploading an existing file"</strong> (you'll see this link in the middle of the page). Drag all 6 files from your <code style="color:var(--aqua)">yachtharbours</code> folder into the upload area. Scroll down and click <strong>"Commit changes"</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert info" style="margin-top:20px">
+      <div class="alert-icon">ℹ️</div>
+      <div class="alert-body"><strong>Why GitHub?</strong> When your domain launches or you want to update the site, you just drag a new file to GitHub and your site automatically updates worldwide within 30 seconds.</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Vercel -->
+  <div class="section">
+    <div class="section-num">Step 2 — Vercel (10 minutes)</div>
+    <h2>Deploy to <em>Vercel</em></h2>
+    <p class="section-sub">Vercel hosts your site globally on their CDN network. Free tier is more than sufficient — and it auto-deploys every time you push to GitHub.</p>
+    <div class="section-divider"></div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Create a Vercel account</div>
+          <div class="step-desc">Go to vercel.com and click <strong>"Sign Up"</strong>. Choose <strong>"Continue with GitHub"</strong> — this links your accounts automatically.</div>
+          <a class="step-action" href="https://vercel.com/signup" target="_blank">→ vercel.com/signup</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Import your GitHub repository</div>
+          <div class="step-desc">From your Vercel dashboard, click <strong>"Add New… → Project"</strong>. You'll see your GitHub repositories listed. Click <strong>"Import"</strong> next to <code style="color:var(--aqua)">yachtharbours</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Configure deployment settings</div>
+          <div class="step-desc">On the configuration screen, set these values:</div>
+          <div class="code-block" style="margin-top:10px">
+            <div class="cb-label">Vercel Settings</div>
+            <span class="kw">Framework Preset:</span>    <span class="val">Other</span><br>
+            <span class="kw">Root Directory:</span>      <span class="val">./  (leave as default)</span><br>
+            <span class="kw">Build Command:</span>       <span class="val">(leave empty)</span><br>
+            <span class="kw">Output Directory:</span>    <span class="val">./  (leave as default)</span><br>
+            <span class="kw">Install Command:</span>     <span class="val">(leave empty)</span>
+          </div>
+          <div class="step-desc" style="margin-top:8px">Click <strong>"Deploy"</strong>. Vercel will build and deploy your site in about 30 seconds.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Your site is now live on a Vercel URL</div>
+          <div class="step-desc">Vercel will give you a URL like <code style="color:var(--aqua)">yacht-harbours.vercel.app</code>. Open it and confirm everything looks correct. This is your site — working! Next we connect your real domain.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert tip" style="margin-top:20px">
+      <div class="alert-icon">⚡</div>
+      <div class="alert-body"><strong>Alternative (no GitHub needed):</strong> In Vercel, click <strong>"Add New → Project → Upload"</strong> and drag your entire folder. Quicker but you lose the auto-deploy feature.</div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Cloudflare -->
+  <div class="section">
+    <div class="section-num">Step 3 — Cloudflare (5 minutes)</div>
+    <h2>Add Domain to <em>Cloudflare</em></h2>
+    <p class="section-sub">Cloudflare gives you free SSL, free DDoS protection, and the world's fastest DNS — all in one step. This is the most important setup step.</p>
+    <div class="section-divider"></div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Create a free Cloudflare account</div>
+          <a class="step-action" href="https://dash.cloudflare.com/sign-up" target="_blank">→ dash.cloudflare.com/sign-up</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Add your site</div>
+          <div class="step-desc">In the Cloudflare dashboard, click <strong>"Add a Site"</strong>. Type <code style="color:var(--aqua)">yachtharbours.com</code> and click <strong>"Add Site"</strong>. Select the <strong>Free</strong> plan and click <strong>"Continue"</strong>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Note your Cloudflare nameservers</div>
+          <div class="step-desc">Cloudflare will show you two nameservers. They look like this — yours will be slightly different:</div>
+          <div class="code-block" style="margin-top:10px">
+            <span class="kw">Nameserver 1:</span>  <span class="str">aria.ns.cloudflare.com</span><br>
+            <span class="kw">Nameserver 2:</span>  <span class="str">bob.ns.cloudflare.com</span>
+          </div>
+          <div class="step-desc" style="margin-top:8px">Copy both nameservers. You'll need them in the next step.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: DNS -->
+  <div class="section">
+    <div class="section-num">Step 4 — Domain Registrar (5 minutes)</div>
+    <h2>Point Domain to <em>Cloudflare</em></h2>
+    <p class="section-sub">Log into wherever you bought yachtharbours.com and replace the default nameservers with Cloudflare's. This tells the internet to route your domain through Cloudflare.</p>
+    <div class="section-divider"></div>
+
+    <div class="card warning">
+      <h3>⏳ When to do this step</h3>
+      <p>Only do this once your domain is released and active. If you registered it and it's still "pending" — wait until you receive confirmation that it's live before changing nameservers.</p>
+    </div>
+
+    <div class="steps" style="margin-top:20px">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Log into your domain registrar</div>
+          <div class="step-desc">Go to the website where you bought yachtharbours.com. Find the DNS or Nameserver settings for the domain.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Replace the nameservers</div>
+          <div class="step-desc">Delete any existing nameservers and add your two Cloudflare nameservers from Step 3. Save the changes.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Add DNS records in Cloudflare</div>
+          <div class="step-desc">Back in Cloudflare → <strong>DNS → Records</strong>. Add these two records pointing to Vercel:</div>
+          <table class="dns-table" style="margin-top:12px">
+            <thead>
+              <tr><th>Type</th><th>Name</th><th>Value</th><th>Proxy</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>A</td><td><code>@</code></td><td><code>76.76.21.21</code></td><td>☁️ Proxied (orange)</td></tr>
+              <tr><td>CNAME</td><td><code>www</code></td><td><code>cname.vercel-dns.com</code></td><td>☁️ Proxied (orange)</td></tr>
+            </tbody>
+          </table>
+          <div class="alert info" style="margin-top:12px">
+            <div class="alert-icon">ℹ️</div>
+            <div class="alert-body"><strong>Proxied (orange cloud) is important.</strong> It routes traffic through Cloudflare's network, activating DDoS protection, SSL, and CDN automatically.</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Add domain in Vercel</div>
+          <div class="step-desc">In Vercel → your project → <strong>Settings → Domains</strong>. Click <strong>"Add"</strong> and type <code style="color:var(--aqua)">www.yachtharbours.com</code>. Vercel will verify the DNS automatically (usually within 5 minutes).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert tip" style="margin-top:20px">
+      <div class="alert-icon">⏱️</div>
+      <div class="alert-body"><strong>Propagation time:</strong> DNS changes can take between 5 minutes and 48 hours to work globally. Usually it's under 30 minutes. You can check propagation at <a href="https://dnschecker.org" target="_blank" style="color:var(--gold)">dnschecker.org</a>.</div>
+    </div>
+  </div>
+
+  <!-- STEP 5: SSL -->
+  <div class="section">
+    <div class="section-num">Step 5 — SSL & Security (5 minutes)</div>
+    <h2>Enable <em>SSL & Security</em></h2>
+    <p class="section-sub">Turn on these Cloudflare settings. All free. All critical. Takes about 5 minutes to click through.</p>
+    <div class="section-divider"></div>
+
+    <div class="card highlight">
+      <h3>🔒 SSL/TLS Settings</h3>
+      <p>In Cloudflare → <strong>SSL/TLS → Overview</strong></p>
+      <p>Set encryption mode to: <strong style="color:var(--gold)">Full (Strict)</strong></p>
+    </div>
+
+    <div class="card highlight" style="margin-top:14px">
+      <h3>⚡ Edge Certificates — turn ALL of these ON</h3>
+      <p>In Cloudflare → <strong>SSL/TLS → Edge Certificates</strong></p>
+      <ul style="list-style:none;margin-top:8px;">
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">Always Use HTTPS</strong> — redirects all HTTP → HTTPS automatically</li>
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">Automatic HTTPS Rewrites</strong> — fixes mixed content warnings</li>
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">HTTP Strict Transport Security (HSTS)</strong> → Max Age: 6 months, Include Subdomains: On, Preload: On</li>
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">TLS 1.3</strong> — latest encryption standard</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>🛡️ Security Settings</h3>
+      <p>In Cloudflare → <strong>Security → Settings</strong></p>
+      <ul style="list-style:none;margin-top:8px;">
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ Security Level: <strong style="color:var(--white)">Medium</strong></li>
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">Bot Fight Mode</strong> — blocks automated scrapers</li>
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">Browser Integrity Check</strong></li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>🚀 Performance Settings</h3>
+      <p>In Cloudflare → <strong>Speed → Optimization</strong></p>
+      <ul style="list-style:none;margin-top:8px;">
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">Auto Minify</strong> — HTML ✓ CSS ✓ JavaScript ✓</li>
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">Brotli Compression</strong></li>
+        <li style="padding:4px 0;font-size:13px;color:var(--muted);">✅ <strong style="color:var(--white)">HTTP/3 (QUIC)</strong> — fastest protocol</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 6: Go Live -->
+  <div class="section">
+    <div class="section-num">Step 6 — You're Live 🎉</div>
+    <h2>Final <em>Checklist</em></h2>
+    <p class="section-sub">Run through this checklist once your domain is connected to confirm everything is working perfectly.</p>
+    <div class="section-divider"></div>
+
+    <ul class="checklist">
+      <li>
+        <div class="chk done">✓</div>
+        <div class="cl-label"><strong>Site loads at www.yachtharbours.com</strong> — open in a browser and confirm<span class="cl-badge b-req">Required</span></div>
+      </li>
+      <li>
+        <div class="chk done">✓</div>
+        <div class="cl-label"><strong>HTTPS padlock visible</strong> in browser address bar<span class="cl-badge b-req">Required</span></div>
+      </li>
+      <li>
+        <div class="chk done">✓</div>
+        <div class="cl-label"><strong>http://yachtharbours.com redirects to https://www.yachtharbours.com</strong> — test this manually<span class="cl-badge b-req">Required</span></div>
+      </li>
+      <li>
+        <div class="chk done">✓</div>
+        <div class="cl-label"><strong>Map screen loads</strong> — tap "Map" in navigation<span class="cl-badge b-req">Required</span></div>
+      </li>
+      <li>
+        <div class="chk done">✓</div>
+        <div class="cl-label"><strong>Stripe payment form appears</strong> in the advertiser signup flow<span class="cl-badge b-req">Required</span></div>
+      </li>
+      <li>
+        <div class="chk done">✓</div>
+        <div class="cl-label"><strong>Hamburger menu opens</strong> — Privacy Policy, About Us, Contact all work<span class="cl-badge b-req">Required</span></div>
+      </li>
+      <li>
+        <div class="chk done">✓</div>
+        <div class="cl-label"><strong>QR code scans correctly</strong> — scan with phone camera<span class="cl-badge b-req">Required</span></div>
+      </li>
+      <li>
+        <div class="chk">✓</div>
+        <div class="cl-label"><strong>Submit sitemap to Google Search Console</strong> — go to search.google.com/search-console and add your property<span class="cl-badge b-later">Next step</span></div>
+      </li>
+      <li>
+        <div class="chk">✓</div>
+        <div class="cl-label"><strong>Add live Stripe keys</strong> — replace the test key in index.html with your live Stripe publishable key<span class="cl-badge b-later">Before payments</span></div>
+      </li>
+      <li>
+        <div class="chk">✓</div>
+        <div class="cl-label"><strong>Set up Stripe backend</strong> — you need a server endpoint to create subscriptions<span class="cl-badge b-later">Before payments</span></div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- COST SUMMARY -->
+  <div class="section">
+    <div class="section-num">Summary</div>
+    <h2>Total <em>Cost</em></h2>
+    <div class="section-divider"></div>
+    <div class="card">
+      <div class="cost-row"><span class="cost-label">Domain (yachtharbours.com)</span><span class="cost-price">~$15 <span class="cost-note">/ year</span></span></div>
+      <div class="cost-row"><span class="cost-label">Vercel Hosting</span><span class="cost-price">$0 <span class="cost-note">Free tier</span></span></div>
+      <div class="cost-row"><span class="cost-label">Cloudflare DNS + SSL + CDN</span><span class="cost-price">$0 <span class="cost-note">Free tier</span></span></div>
+      <div class="cost-row"><span class="cost-label">DDoS Protection</span><span class="cost-price">$0 <span class="cost-note">Included in Cloudflare</span></span></div>
+      <div class="cost-row"><span class="cost-label">SSL Certificate</span><span class="cost-price">$0 <span class="cost-note">Cloudflare Universal SSL</span></span></div>
+      <div class="cost-row"><span class="cost-label">GitHub Repository</span><span class="cost-price">$0 <span class="cost-note">Free tier</span></span></div>
+      <div class="cost-row">
+        <span class="cost-label" style="font-weight:700;color:var(--white);">Total Annual Cost</span>
+        <span class="cost-price total">~$15 / year</span>
+      </div>
+    </div>
+    <div class="alert tip" style="margin-top:16px">
+      <div class="alert-icon">💰</div>
+      <div class="alert-body"><strong>Revenue from day one:</strong> Stripe charges 2.9% + 30¢ per subscription payment. With just 2 Gold advertisers ($2,499 each), you earn $4,998 in year-one revenue against $15 in costs.</div>
+    </div>
+  </div>
+
+  <!-- SUPPORT -->
+  <div class="section">
+    <div class="section-num">Need Help?</div>
+    <h2>Quick <em>Reference</em></h2>
+    <div class="section-divider"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="card">
+        <h3>🔗 Key URLs</h3>
+        <p><a href="https://vercel.com/dashboard" target="_blank" style="color:var(--aqua);">vercel.com/dashboard</a></p>
+        <p><a href="https://dash.cloudflare.com" target="_blank" style="color:var(--aqua);">dash.cloudflare.com</a></p>
+        <p><a href="https://github.com" target="_blank" style="color:var(--aqua);">github.com</a></p>
+        <p><a href="https://dashboard.stripe.com" target="_blank" style="color:var(--aqua);">dashboard.stripe.com</a></p>
+        <p><a href="https://dnschecker.org" target="_blank" style="color:var(--aqua);">dnschecker.org</a></p>
+      </div>
+      <div class="card">
+        <h3>✉️ Contact</h3>
+        <p style="color:var(--muted)">Site: <a href="https://www.yachtharbours.com" style="color:var(--aqua)">yachtharbours.com</a></p>
+        <p style="color:var(--muted)">General: <a href="mailto:hello@yachtharbours.com" style="color:var(--aqua)">hello@yachtharbours.com</a></p>
+        <p style="color:var(--muted)">Advertisers: <a href="mailto:advertise@yachtharbours.com" style="color:var(--aqua)">advertise@yachtharbours.com</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-footer">
+    <p>Yacht Harbours Ltd · <span>www.yachtharbours.com</span> · Deployment Guide v1.0</p>
+    <p style="margin-top:6px;">Built with Claude · Hosted on Vercel · Protected by Cloudflare</p>
+  </div>
+
+</div>
+</body>
+</html>

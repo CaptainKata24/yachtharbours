@@ -1,0 +1,28 @@
+# ============================================================
+# Yacht Harbours — www.yachtharbours.com
+# URL Redirects
+# ============================================================
+
+# ── FORCE WWW (non-www → www) ─────────────────────────────
+https://yachtharbours.com/*   https://www.yachtharbours.com/:splat   301!
+
+# ── SPA ROUTING (all paths → index.html) ─────────────────
+# These allow deep-linking into the single-page app
+/marinas          /index.html    200
+/map              /index.html    200
+/advertise        /index.html    200
+/advertiser       /index.html    200
+/countries/*      /index.html    200
+/marina/*         /index.html    200
+/country/*        /index.html    200
+
+# ── LEGACY / CONVENIENCE SHORTCUTS ───────────────────────
+/privacy          /index.html    200
+/about            /index.html    200
+/contact          /index.html    200
+/list             /index.html    200
+/signup           /index.html    200
+/login            /index.html    200
+
+# ── 404 FALLBACK ─────────────────────────────────────────
+/*                /index.html    200
