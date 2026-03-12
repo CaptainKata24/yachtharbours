@@ -1062,7 +1062,7 @@ function marinaCardHTML(m, cid){
   </div>`;
   const card=`<div class="mc" onclick="showCountry('${cid||m.countryId}')">
     <div class="mc-img">
-      <div class="mc-bg" style="background:${m.bg}">${m.emoji||'⚓'}</div>
+      <div class="mc-bg" style="background:${m.bg}">${m.bg.includes('url(') ? '' : (m.emoji||'⚓')}</div>
       ${bl}<div class="mc-fav">♡</div>
     </div>
     <div class="mc-body">
