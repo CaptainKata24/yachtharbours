@@ -414,6 +414,32 @@ footer{border-top:1px solid var(--border);padding:46px 36px 22px;max-width:1380p
 .logo:hover .logo-img {
   filter: drop-shadow(0 0 10px rgba(201,168,76,0.7));
 }
+
+/* ── REGION SCREEN ── */
+.region-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:24px 0;}
+.rc{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;aspect-ratio:4/3;border:1px solid var(--border);transition:transform .25s,border-color .25s;background:var(--card);}
+.rc:hover{transform:translateY(-5px);border-color:rgba(201,168,76,.5);}
+.rc-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s;}
+.rc:hover .rc-bg{transform:scale(1.05);}
+.rc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,14,30,.92) 40%,rgba(6,14,30,.3) 100%);}
+.rc-body{position:absolute;bottom:0;left:0;right:0;padding:18px 16px;}
+.rc-emoji{font-size:28px;margin-bottom:6px;}
+.rc-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;}
+.rc-stats{display:flex;gap:12px;font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.7px;}
+.rc-stat{display:flex;align-items:center;gap:4px;}
+.rc-badge{position:absolute;top:12px;right:12px;background:rgba(201,168,76,.9);color:#0a0f1e;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase;}
+/* ── REGION breadcrumb ── */
+.r-bread{font-size:12px;color:var(--muted);padding:14px 0 0;cursor:pointer;}
+.r-bread span:hover{color:var(--aqua);}
+.r-bread span+span::before{content:' › ';margin:0 4px;}
+/* ── REGION carousel header ── */
+.reg-hdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.reg-hdr-flag{font-size:28px;}
+.reg-hdr-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;}
+.reg-hdr-count{font-size:11px;color:var(--muted);margin-top:2px;}
+@media(max-width:900px){.region-grid{grid-template-columns:1fr 1fr;}.rc-name{font-size:15px;}}
+@media(max-width:600px){.region-grid{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -427,6 +453,7 @@ footer{border-top:1px solid var(--border);padding:46px 36px 22px;max-width:1380p
     <span class="logo-text">Yacht <span>Harbours</span></span>
   </div>
   <ul class="nav-links">
+    <li><a onclick="go('regions')" id="nav-regions">Regions</a></li>
     <li><a onclick="go('home')" id="nav-home" class="active">Marinas</a></li>
     <li><a onclick="go('map')" id="nav-map">Map</a></li>
     <li><a onclick="go('advert')" id="nav-advert">Advertise</a></li>
@@ -438,6 +465,40 @@ footer{border-top:1px solid var(--border);padding:46px 36px 22px;max-width:1380p
     <button class="btn btn-g" onclick="go('advert')">List Your Harbour Free</button>
   </div>
 </nav>
+
+<!-- ========== REGIONS SCREEN ========== -->
+<div id="regionsScreen" class="screen">
+  <div class="section">
+    <div class="sec-hdr" style="margin-bottom:8px">
+      <div><div class="sec-lbl">Explore by Region</div><div class="sec-ttl">Choose Your <em>Sailing World</em></div></div>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:0">Select a region to browse countries and their yacht harbours</p>
+    <div class="region-grid" id="regionGrid"></div>
+  </div>
+  <footer><div class="fbot"><span>© 2026 Yacht Harbours Ltd.</span><span>🌊 All marinas list free</span></div></footer>
+</div>
+
+<!-- ========== REGION-COUNTRY SCREEN ========== -->
+<div id="regionCountryScreen" class="screen">
+  <div class="section">
+    <div class="r-bread" id="rcBread"></div>
+    <div class="reg-hdr" style="margin-top:18px">
+      <div class="reg-hdr-flag" id="rcFlag"></div>
+      <div>
+        <div class="reg-hdr-name" id="rcName"></div>
+        <div class="reg-hdr-count" id="rcCount"></div>
+      </div>
+    </div>
+    <div class="sec-hdr" style="margin-bottom:10px">
+      <div><div class="sec-lbl">Countries</div><div class="sec-ttl">Select a <em>Country</em></div></div>
+    </div>
+    <div class="car-wrap">
+      <div class="car-t" id="rcRow1"></div>
+      <div class="car-tr" id="rcRow2"></div>
+    </div>
+  </div>
+  <footer><div class="fbot"><span>© 2026 Yacht Harbours Ltd.</span><span>🌊 All marinas list free</span></div></footer>
+</div>
 
 <!-- ========== HOME ========== -->
 <div id="homeScreen" class="screen active">
@@ -459,6 +520,7 @@ footer{border-top:1px solid var(--border);padding:46px 36px 22px;max-width:1380p
       <button class="sbtn">Search</button>
     </div>
     <div class="hero-tags">
+      <span class="tag" onclick="go('regions')" style="background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);">🌍 Browse Regions</span>
       <span class="tag" onclick="showCountry('fr')">🇫🇷 French Riviera</span>
       <span class="tag" onclick="showCountry('gr')">🇬🇷 Greek Islands</span>
       <span class="tag" onclick="showCountry('ae')">🇦🇪 Dubai</span>
@@ -467,6 +529,8 @@ footer{border-top:1px solid var(--border);padding:46px 36px 22px;max-width:1380p
       <span class="tag" onclick="showCountry('es')">🇪🇸 Spain</span>
       <span class="tag" onclick="showCountry('tr')">🇹🇷 Turkey</span>
       <span class="tag" onclick="showCountry('au')">🇦🇺 Sydney</span>
+      <span class="tag" onclick="showCountry('us')">🇺🇸 USA Coasts</span>
+      <span class="tag" onclick="showCountry('ca')">🇨🇦 BC Canada</span>
     </div>
     <div class="hero-stats">
       <div><span class="stat-n">12,<span>400</span>+</span><div class="stat-l">Free Listings</div></div>
@@ -487,7 +551,7 @@ footer{border-top:1px solid var(--border);padding:46px 36px 22px;max-width:1380p
   <div class="section">
     <div class="sec-hdr">
       <div><div class="sec-lbl">Global Coverage</div><div class="sec-ttl">Every Country, <em>Every Coast</em></div></div>
-      <span class="view-all" onclick="go('map')">Explore Map →</span>
+      <span class="view-all" onclick="go('regions')" style="color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:6px 14px;border-radius:6px;">Browse Regions →</span>
     </div>
     <div class="car-wrap">
       <div class="car-t" id="row1"></div>
@@ -915,14 +979,29 @@ footer{border-top:1px solid var(--border);padding:46px 36px 22px;max-width:1380p
    ===================================================================== */
 const COUNTRIES={
   fr:{flag:'🇫🇷',name:'France',region:'Mediterranean / Atlantic',lat:46.2,lng:2.2,zoom:5,marinaCount:187,berths:42000,maxLen:180,topRegion:'Côte d\'Azur',currency:'EUR €',season:'Year-round. Peak June–Sept.',regulations:'EU flag. VHF Ch.9/16.',highlights:['Côte d\'Azur','Brittany','Corsica'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🛒 Provisions','🔒 24h Security','🚁 Helipad'],desc:'France boasts the largest marina network in Europe, from the glamorous French Riviera to rugged Brittany. The Côte d\'Azur is home to Port Vauban Antibes — Europe\'s largest superyacht marina.',marinas:[
-    {name:'Port Vauban',loc:'Antibes',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/e/e8/Port_vauban_antibes_vue_nord_aerienne.JPG) center/cover no-repeat',credit:'© Abxbay / CC BY-SA 3.0',emoji:'🛥️',berths:1642,maxLen:180,depth:10,price:'€180',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:312,lat:43.584,lng:7.129,type:'superyacht',desc:'Europe\'s largest superyacht marina, home to over 1,600 berths and legendary Riviera atmosphere.'},
+    {name:'Port Vauban',loc:'Antibes',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/e/e4/Antibes_Port_Vauban_01.jpg) center/cover no-repeat',credit:'© Spike / CC BY-SA 4.0',emoji:'🛥️',berths:1642,maxLen:180,depth:10,price:'€180',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:312,lat:43.584,lng:7.129,type:'superyacht',desc:'Europe\'s largest superyacht marina, home to over 1,600 berths and legendary Riviera atmosphere.'},
     {name:'Port Hercule',loc:'Monaco',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/da/Panorama_von_Monaco-La_Turbie.jpg) center/cover no-repeat',credit:'© Tobi 87 / CC BY-SA 3.0',emoji:'🎰',berths:700,maxLen:135,depth:30,price:'€950',unit:'/night',rating:'★★★★★',ratingN:5.0,rev:88,lat:43.731,lng:7.425,type:'superyacht',desc:'World\'s most glamorous berth address. Annual home of the Monaco Yacht Show.'},
-    {name:'Marina de Saint-Tropez',loc:'Saint-Tropez',badge:'new',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/3/3c/Sailboats_at_the_Saint-Tropez_marina.JPG) center/cover no-repeat',credit:'© Ballista / CC BY-SA 3.0',emoji:'⛵',berths:350,maxLen:90,depth:8,price:'€380',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:142,lat:43.272,lng:6.637,type:'superyacht',desc:'Most sought-after Riviera berth. Home to Les Voiles de Saint-Tropez regatta.'},
-    {name:'Marina Baie des Anges',loc:'Villeneuve-Loubet',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/a7/Marina_Montagnes_-_Villeneuve-Loubet.jpg) center/cover no-repeat',credit:'© Calys / CC BY-SA 4.0',emoji:'🌊',berths:1200,maxLen:60,depth:8,price:'€85',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:241,lat:43.633,lng:7.133,type:'sailing',desc:'Landmark futuristic marina complex with over 1,200 berths in the heart of the Riviera.'}
+    {name:'Port Vauban',loc:'Antibes',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/e/e4/Antibes_Port_Vauban_01.jpg) center/cover no-repeat',credit:'© Spike / CC BY-SA 4.0',emoji:'⚓',berths:1642,maxLen:170,depth:8,price:'€480',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:389,lat:43.579,lng:7.124,type:'superyacht',desc:'Largest marina in the Mediterranean. 1,642 berths accommodating yachts 4m–170m. Luxury concierge and provisioning.'},
+    {name:'Vieux Port de Cannes',loc:'Cannes',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/9/93/Port_of_Cannes.jpg) center/cover no-repeat',credit:'© Raimond Spekking / CC BY-SA 4.0',emoji:'🎬',berths:600,maxLen:80,depth:7,price:'€390',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:312,lat:43.550,lng:7.017,type:'superyacht',desc:'Home of the Cannes Film Festival and Cannes Yachting Festival. The Riviera\'s most glamorous harbour address.'},
+    {name:'Port de Nice',loc:'Nice',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/6/60/Nice_vieux_port.jpg) center/cover no-repeat',credit:'© Raimond Spekking / CC BY-SA 4.0',emoji:'🌆',berths:800,maxLen:60,depth:6,price:'€145',unit:'/night',rating:'★★★★☆',ratingN:4.7,rev:267,lat:43.695,lng:7.276,type:'sailing',desc:'800-berth city marina in the heart of the Côte d\'Azur capital. Steps from the Promenade des Anglais.'},
+    {name:'Cala del Forte',loc:'Ventimiglia',badge:'new',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/3/3c/Sailboats_at_the_Saint-Tropez_marina.JPG) center/cover no-repeat',credit:'© Ballista / CC BY-SA 3.0',emoji:'🛥️',berths:178,maxLen:70,depth:6,price:'€320',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:88,lat:43.795,lng:7.596,type:'superyacht',desc:'Monaco Ports operated. Free shuttle to Port Hercules in 15 minutes. Opened 2021. Shipyard for yachts up to 30m.'},
+    {name:'Marina de Saint-Tropez',loc:'Saint-Tropez',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/3/3c/Sailboats_at_the_Saint-Tropez_marina.JPG) center/cover no-repeat',credit:'© Ballista / CC BY-SA 3.0',emoji:'⛵',berths:350,maxLen:90,depth:8,price:'€380',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:142,lat:43.272,lng:6.637,type:'superyacht',desc:'Most sought-after Riviera berth. Home to Les Voiles de Saint-Tropez regatta.'},
+    {name:'Marina Baie des Anges',loc:'Villeneuve-Loubet',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/a7/Marina_Montagnes_-_Villeneuve-Loubet.jpg) center/cover no-repeat',credit:'© Calys / CC BY-SA 4.0',emoji:'🌊',berths:1200,maxLen:60,depth:8,price:'€85',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:241,lat:43.633,lng:7.133,type:'sailing',desc:'Landmark futuristic marina complex with over 1,200 berths in the heart of the Riviera.'},
+    {name:'Port de Golfe-Juan',loc:'Golfe-Juan',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/a7/Marina_Montagnes_-_Villeneuve-Loubet.jpg) center/cover no-repeat',credit:'© Calys / CC BY-SA 4.0',emoji:'⚓',berths:850,maxLen:50,depth:5,price:'€75',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:198,lat:43.561,lng:7.079,type:'sailing',desc:'850 berths between Cannes and Nice. Convenient stopover with full services on the Côte d\'Azur.'}
   ]},
   it:{flag:'🇮🇹',name:'Italy',region:'Mediterranean',lat:41.9,lng:12.5,zoom:5,marinaCount:241,berths:55000,maxLen:200,topRegion:'Sardinia & Amalfi',currency:'EUR €',season:'April–Oct.',regulations:'Blue Card for EU waters.',highlights:['Sardinia','Amalfi','Venice'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🛒 Provisions','🚿 Showers'],desc:'Italy offers the most marina berths in the Mediterranean — from Porto Cervo in Sardinia to the dramatic Amalfi Coast and Venetian lagoon.',marinas:[
-    {name:'Marina di Porto Cervo',loc:'Sardinia',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/af/Porto_Cervo1.jpg) center/cover no-repeat',credit:'© Alistair Wettin / CC BY-SA 4.0',emoji:'⛵',berths:700,maxLen:120,depth:12,price:'€420',unit:'/night',rating:'★★★★★',ratingN:5.0,rev:224,lat:41.132,lng:9.526,type:'superyacht',desc:'The pinnacle of Mediterranean yachting glamour. Home to the Maxi Yacht Rolex Cup.'},
-    {name:'Marina Grande Capri',loc:'Capri',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/d8/Capri_island_-_Campania_-_Italy_-_July_12th_2013_-_16.jpg) center/cover no-repeat',credit:'© Norbert Nagel / CC BY-SA 3.0',emoji:'🏝️',berths:120,maxLen:60,depth:6,price:'€580',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:88,lat:40.551,lng:14.243,type:'superyacht',desc:'Reportedly the most expensive marina per berth in the world.'}
+    {name:'Marina di Porto Cervo',loc:'Sardinia — Costa Smeralda',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/af/Porto_Cervo1.jpg) center/cover no-repeat',credit:'© Alistair Wettin / CC BY-SA 4.0',emoji:'⛵',berths:700,maxLen:135,depth:12,price:'€420',unit:'/night',rating:'★★★★★',ratingN:5.0,rev:224,lat:41.132,lng:9.526,type:'superyacht',desc:'The world\'s 2nd most expensive marina. 700 berths up to 135m. Home to the Maxi Yacht Rolex Cup. VIP sightings guaranteed.'},
+    {name:'Marina di Portofino',loc:'Portofino, Italian Riviera',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/d1/Portofino_pano.jpg) center/cover no-repeat',credit:'© Wolfgang Moroder / CC BY-SA 3.0',emoji:'🎨',berths:14,maxLen:40,depth:5,price:'€650',unit:'/night',rating:'★★★★★',ratingN:5.0,rev:78,lat:44.304,lng:9.208,type:'superyacht',desc:'Ultra-exclusive — only 14 berths in Italy\'s most iconic village. Lush cliffs, colourful facades, Michelin restaurants.'},
+    {name:'Marina di Stabia',loc:'Castellammare di Stabia',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/d8/Capri_island_-_Campania_-_Italy_-_July_12th_2013_-_16.jpg) center/cover no-repeat',credit:'© Norbert Nagel / CC BY-SA 3.0',emoji:'🏭',berths:1000,maxLen:100,depth:8,price:'€185',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:198,lat:40.701,lng:14.479,type:'full',desc:'Top-end shipyard near Pompeii and Capri. Private beach club. 1,000 berths, extensive refit facilities up to 100m.'},
+    {name:'Porto Rotondo',loc:'Sardinia — Gallura',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/00/Olbia%2C_frazione_Porto_Rotondo%2C_panorama_%2802%29.jpg) center/cover no-repeat',credit:'© Gianni Careddu / CC BY-SA 4.0',emoji:'🏖️',berths:700,maxLen:70,depth:6,price:'€290',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:167,lat:40.975,lng:9.536,type:'superyacht',desc:'Aga Khan-developed VIP resort marina. 700 berths on Sardinia\'s emerald coast. Adjacent luxury village.'},
+    {name:'Porto Carlo Riva',loc:'Imperia, Italian Riviera',badge:'new',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/d1/Portofino_pano.jpg) center/cover no-repeat',credit:'© Wolfgang Moroder / CC BY-SA 3.0',emoji:'🌊',berths:250,maxLen:60,depth:6,price:'€195',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:112,lat:43.886,lng:8.018,type:'superyacht',desc:'Premium Italian Riviera marina. 250 berths up to 60m. Named after the legendary Riva boat brand.'},
+    {name:'Marina Grande Capri',loc:'Capri',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/d8/Capri_island_-_Campania_-_Italy_-_July_12th_2013_-_16.jpg) center/cover no-repeat',credit:'© Norbert Nagel / CC BY-SA 3.0',emoji:'🏝️',berths:120,maxLen:60,depth:6,price:'€580',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:88,lat:40.551,lng:14.243,type:'superyacht',desc:'Reportedly the most expensive marina per berth in the world. Gateway to the Blue Grotto.'},
+    {name:'Marina di Porto Cervo (YCCS)',loc:'Costa Smeralda, Sardinia',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/00/Olbia%2C_frazione_Porto_Rotondo%2C_panorama_%2802%29.jpg) center/cover no-repeat',credit:'© Gianni Careddu / CC BY-SA 4.0',emoji:'🏆',berths:700,maxLen:100,depth:7,price:'€310',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:145,lat:41.133,lng:9.525,type:'superyacht',desc:'Yacht Club Costa Smeralda home port. Regattas include Maxi Rolex and Loro Piana. Dolphin-filled emerald waters.'}
+  ]},
+  mt:{flag:'🇲🇹',name:'Malta',region:'Central Mediterranean',lat:35.9,lng:14.5,zoom:10,marinaCount:19,berths:4200,maxLen:100,topRegion:'Valletta & Msida',currency:'EUR €',season:'Year-round.',regulations:'EU. VHF Ch.12.',highlights:['Valletta','Msida','Ta\'Xbiex'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🏛️ Heritage'],desc:'Malta sits at the heart of the Mediterranean and offers a UNESCO World Heritage harbour — Grand Harbour Valletta — alongside a thriving superyacht services sector.',marinas:[
+    {name:'Grand Harbour Marina',loc:'Valletta',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/57/Valletta_Malta_16.jpg) center/cover no-repeat',credit:'© Frank Vincentz / CC BY-SA 3.0',emoji:'🏛️',berths:260,maxLen:80,depth:9,price:'€195',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:189,lat:35.898,lng:14.511,type:'superyacht',desc:'Camper & Nicholson-managed superyacht marina inside a UNESCO World Heritage Site. 24/7 security and customs clearance.'},
+    {name:'Msida Marina',loc:'Msida',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/f/f2/Malta_-_Msida%2BPieta_-_Msida_Marina_%28MSTHC%29_01_ies.jpg) center/cover no-repeat',credit:'© Frank Vincentz / CC BY-SA 3.0',emoji:'⚓',berths:650,maxLen:25,depth:3,price:'€45',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:312,lat:35.899,lng:14.490,type:'sailing',desc:'Malta\'s largest marina by berth count. 650 berths for leisure craft. Adjacent to the Msida creek and Valletta views.'},
+    {name:'Marina Ta\' Xbiex',loc:'Ta\' Xbiex',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/57/Valletta_Malta_16.jpg) center/cover no-repeat',credit:'© Frank Vincentz / CC BY-SA 3.0',emoji:'🌊',berths:400,maxLen:40,depth:4,price:'€65',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:198,lat:35.900,lng:14.497,type:'full',desc:'Elegant marina creek between Valletta and Sliema. 400 berths with full services in a prime residential waterfront.'}
   ]},
   gr:{flag:'🇬🇷',name:'Greece',region:'Aegean / Ionian',lat:39,lng:22,zoom:5,marinaCount:234,berths:38000,maxLen:100,topRegion:'Aegean Islands',currency:'EUR €',season:'April–Oct.',regulations:'DEKPA permit for non-EU.',highlights:['Aegean','Ionian','Athens'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','⛵ Charter'],desc:'Greece is the spiritual home of Mediterranean sailing, with 6,000+ islands and the world\'s most spectacular cruising grounds.',marinas:[
     {name:'Zea Marina',loc:'Piraeus, Athens',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/0a/Peiraias_marina_Zea_3.jpg) center/cover no-repeat',credit:'© Andrzej Otrębski / CC BY-SA 3.0',emoji:'⚓',berths:520,maxLen:65,depth:8,price:'€95',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:198,lat:37.936,lng:23.639,type:'sailing',desc:'Premier yacht harbour in Greece and base for Aegean charter operations.'},
@@ -930,8 +1009,15 @@ const COUNTRIES={
   ]},
   es:{flag:'🇪🇸',name:'Spain',region:'Mediterranean / Atlantic',lat:40.4,lng:-3.7,zoom:5,marinaCount:148,berths:36000,maxLen:190,topRegion:'Balearics & Costa del Sol',currency:'EUR €',season:'Year-round south.',regulations:'EU. VHF Ch.9.',highlights:['Balearics','Marbella','Barcelona'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🏊 Pool'],desc:'Spain has world-class marinas along the Costa del Sol and Balearic Islands. Barcelona hosted America\'s Cup 2024.',marinas:[
     {name:'Marina Port Vell',loc:'Barcelona',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/2/22/Port_Vell_Rambla_de_Mar_04.JPG) center/cover no-repeat',credit:'© Böhringer Friedrich / CC BY-SA 2.5',emoji:'🏟️',berths:474,maxLen:190,depth:12,price:'€380',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:187,lat:41.374,lng:2.183,type:'superyacht',desc:'America\'s Cup 2024 venue. 400m mega-dock with €20M renovation.'},
-    {name:'Puerto Portals',loc:'Mallorca',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/c/c7/Marina_in_Puerto_Portals_%2810573934523%29.jpg) center/cover no-repeat',credit:'© Dirk Vorderstraße / CC BY 2.0',emoji:'⚓',berths:672,maxLen:70,depth:8,price:'€210',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:243,lat:39.524,lng:2.545,type:'superyacht',desc:'Most prestigious marina in the Balearics with designer boutiques and Michelin dining.'},
-    {name:'Puerto Banús',loc:'Marbella',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/54/Puerto_Ban%C3%BAs_3.jpg) center/cover no-repeat',credit:'© kallerna / CC BY-SA 4.0',emoji:'🌴',berths:915,maxLen:90,depth:10,price:'€185',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:412,lat:36.487,lng:-4.953,type:'motor',desc:'Spain\'s most famous marina — legendary since the 1970s.'}
+    {name:'Port Adriano',loc:'Calvià, Mallorca',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/c/c7/Marina_in_Puerto_Portals_%2810573934523%29.jpg) center/cover no-repeat',credit:'© Dirk Vorderstraße / CC BY 2.0',emoji:'🎨',berths:488,maxLen:100,depth:8,price:'€280',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:198,lat:39.506,lng:2.474,type:'superyacht',desc:'Philippe Starck-designed icon. 87 superyacht berths, 10,000m² shipyard. Most modern marina in the Med.'},
+    {name:'Puerto Portals',loc:'Mallorca',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/c/c7/Marina_in_Puerto_Portals_%2810573934523%29.jpg) center/cover no-repeat',credit:'© Dirk Vorderstraße / CC BY 2.0',emoji:'⚓',berths:650,maxLen:60,depth:6,price:'€210',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:243,lat:39.524,lng:2.545,type:'superyacht',desc:'Most prestigious marina in the Balearics with designer boutiques and Michelin dining.'},
+    {name:'Marina Ibiza',loc:'Ibiza Town',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/4/4e/Ibiza_eivissa_harbour.jpg) center/cover no-repeat',credit:'© Oltau / CC BY-SA 3.0',emoji:'🎶',berths:425,maxLen:110,depth:7,price:'€320',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:312,lat:38.909,lng:1.435,type:'superyacht',desc:'Ibiza\'s golden mile. 425 berths up to 110m. Luxury boutiques and world-famous club proximity.'},
+    {name:'Marina Port Tarraco',loc:'Tarragona',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/2/22/Port_Vell_Rambla_de_Mar_04.JPG) center/cover no-repeat',credit:'© Böhringer Friedrich / CC BY-SA 2.5',emoji:'⚓',berths:33,maxLen:160,depth:10,price:'€420',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:67,lat:41.110,lng:1.249,type:'superyacht',desc:'Home of giants — 33 deep-water berths exclusively for superyachts 45–160m. Known as the Costa Daurada\'s superyacht capital.'},
+    {name:'Club Nautic Roses',loc:'Costa Brava',badge:'new',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/b/bc/Harbour_Cadaques_Cataluna_Costa_Brava_-_Mythos_Spain_Photographie_-_panoramio.jpg) center/cover no-repeat',credit:'© Jettcom / CC BY-SA 3.0',emoji:'⛵',berths:374,maxLen:45,depth:5,price:'€95',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:123,lat:42.265,lng:3.178,type:'sailing',desc:'374-berth marina on the Costa Brava with superyacht capability. Modern facilities, 24/7 security.'},
+    {name:'Port de Palamós',loc:'Costa Brava',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/c/c0/Palam%C3%B3s_harbour.jpg) center/cover no-repeat',credit:'© Toniher / CC BY-SA 3.0',emoji:'⛵',berths:700,maxLen:50,depth:6,price:'€75',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:189,lat:41.847,lng:3.133,type:'sailing',desc:'Large all-weather marina. Bavaria & Hanse delivery hub. 110 visitor berths on the spectacular Costa Brava.'},
+    {name:'Puerto Banús',loc:'Marbella',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/54/Puerto_Ban%C3%BAs_3.jpg) center/cover no-repeat',credit:'© kallerna / CC BY-SA 4.0',emoji:'🌴',berths:915,maxLen:90,depth:10,price:'€185',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:412,lat:36.487,lng:-4.953,type:'motor',desc:'Spain\'s most famous marina — legendary since the 1970s.'},
+    {name:'Port de Pollença',loc:'Mallorca',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/c/c7/Marina_in_Puerto_Portals_%2810573934523%29.jpg) center/cover no-repeat',credit:'© Dirk Vorderstraße / CC BY 2.0',emoji:'⚓',berths:611,maxLen:40,depth:4,price:'€65',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:211,lat:39.905,lng:3.094,type:'sailing',desc:'611 berths in the beautiful Bay of Pollença. 90 transit berths available. Northern Mallorca\'s premier harbour.'},
+    {name:'Ocean Village & Marina Bay',loc:'Gibraltar',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/e/e8/Gibraltar_from_the_sea.jpg) center/cover no-repeat',credit:'© Gibmetal77 / CC BY-SA 3.0',emoji:'🪨',berths:370,maxLen:80,depth:7,price:'€95',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:178,lat:36.139,lng:-5.352,type:'full',desc:'Duty-free gateway to the Med. Customs facilities, full marine services. Unique Rock of Gibraltar setting.'}
   ]},
   hr:{flag:'🇭🇷',name:'Croatia',region:'Adriatic',lat:45.1,lng:15.2,zoom:6,marinaCount:82,berths:17000,maxLen:80,topRegion:'Dalmatian Coast',currency:'EUR €',season:'May–Oct.',regulations:'Cruising permit required.',highlights:['Dalmatia','Dubrovnik','Istria'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','⛵ Charter'],desc:'Croatia has 1,244 islands and 6,200km of coastline. The ACI marina chain provides world-class standards throughout Dalmatia.',marinas:[
     {name:'ACI Marina Dubrovnik',loc:'Dubrovnik',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/6/67/The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg) center/cover no-repeat',credit:'© Zysko serhii / CC BY-SA 4.0',emoji:'🏰',berths:364,maxLen:60,depth:7,price:'€78',unit:'/night',rating:'★★★★☆',ratingN:4.7,rev:421,lat:42.655,lng:18.07,type:'sailing',desc:'Beneath the UNESCO Old Town walls. Most photographed marina in the Adriatic.'},
@@ -942,8 +1028,72 @@ const COUNTRIES={
     {name:'Yas Marina',loc:'Abu Dhabi',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/f/f6/North_Grandstand_at_the_Yas_Marina_circuit_in_Abu_Dhabi.jpg) center/cover no-repeat',credit:'© TravelPhotosNL / CC BY-SA 4.0',emoji:'🏎️',berths:236,maxLen:100,depth:10,price:'AED 480',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:167,lat:24.466,lng:54.604,type:'superyacht',desc:'Next to the Abu Dhabi Grand Prix circuit.'}
   ]},
   us:{flag:'🇺🇸',name:'USA',region:'Atlantic / Pacific / Gulf',lat:37.1,lng:-95.7,zoom:4,marinaCount:312,berths:85000,maxLen:180,topRegion:'Florida & New England',currency:'USD $',season:'Year-round in FL/CA.',regulations:'State registration. VHF Ch.16.',highlights:['Florida Keys','New England','Pacific Northwest'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🍽️ Restaurants'],desc:'The USA has the world\'s largest recreational boating market with 3,700+ marinas from the Florida Keys to the Pacific Northwest.',marinas:[
-    {name:'Pier 66 Marina',loc:'Fort Lauderdale, FL',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/5d/Skyline_of_Fort_Lauderdale%2C_Nov-15.jpg) center/cover no-repeat',credit:'© KeanoManu / CC BY-SA 4.0',emoji:'🛥️',berths:165,maxLen:130,depth:12,price:'$340',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:289,lat:26.118,lng:-80.107,type:'superyacht',desc:'$1B redevelopment. Heart of the Yachting Capital of the World.'},
-    {name:'Marina del Rey',loc:'Los Angeles, CA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/2/2a/Marina_Del_Rey%2C_Playa_Vista%2C_and_Los_Angeles_International_Airport.jpg) center/cover no-repeat',credit:'© Alfred Twu / CC0 Public Domain',emoji:'🌞',berths:5000,maxLen:120,depth:10,price:'$180',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:512,lat:33.98,lng:-118.45,type:'full',desc:'Largest man-made small craft harbour in North America.'}
+    // ── WEST COAST ──────────────────────────────────────────────────────
+    {name:'Shilshole Bay Marina',loc:'Seattle, WA',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/f/fe/Zuanich-Park-And-Squalicum-Harbor-From-Western-Washington-University.jpg) center/cover no-repeat',credit:'© Allyn / CC BY-SA 4.0',emoji:'🌲',berths:1500,maxLen:80,depth:8,price:'$95',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:312,lat:47.686,lng:-122.404,type:'sailing',desc:'Puget Sound\'s premier marina with direct access to the San Juan Islands. Spectacular Olympic Mountain backdrop. 1,500 berths.'},
+    {name:'Port of Bellingham',loc:'Bellingham, WA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/f/fe/Zuanich-Park-And-Squalicum-Harbor-From-Western-Washington-University.jpg) center/cover no-repeat',credit:'© Allyn / CC BY-SA 4.0',emoji:'⚓',berths:1800,maxLen:100,depth:9,price:'$65',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:234,lat:48.745,lng:-122.502,type:'full',desc:'Gateway to the San Juan Islands and Gulf Islands. 1,800 berths with full services. Close to the Canadian border.'},
+    {name:'Westport Marina',loc:'Westport, WA',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/f/f1/Astoria_oregon_river_boat.jpg) center/cover no-repeat',credit:'© CambridgeBayWeather / CC BY-SA 3.0',emoji:'🦅',berths:750,maxLen:60,depth:6,price:'$45',unit:'/night',rating:'★★★★☆',ratingN:4.4,rev:178,lat:46.906,lng:-124.107,type:'full',desc:'Pacific coast fishing and cruising hub. Access to the Washington Coast and Columbia River.'},
+    {name:'Port of Astoria',loc:'Astoria, OR',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/08/Astoria_Oregon_-_East_Mooring_Basin.jpg) center/cover no-repeat',credit:'© M.O. Stevens / CC BY-SA 3.0',emoji:'🌉',berths:600,maxLen:200,depth:10,price:'$55',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:189,lat:46.188,lng:-123.827,type:'full',desc:'Historic gateway at the mouth of the Columbia River. Tidal range cruising. Oregon\'s oldest city, rich maritime heritage.'},
+    {name:'Newport Marina',loc:'Newport, OR',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/3/34/Newport_harbor_%28OR%29.jpg) center/cover no-repeat',credit:'© D. Reinhart / CC BY-SA 3.0',emoji:'🦭',berths:900,maxLen:100,depth:8,price:'$50',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:221,lat:44.633,lng:-124.053,type:'full',desc:'Oregon\'s busiest commercial and sport fishing port. Sea lions on the docks. Adjacent to Oregon Coast Aquarium.'},
+    {name:'Coos Bay Marina',loc:'Coos Bay, OR',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/f/f1/Astoria_oregon_river_boat.jpg) center/cover no-repeat',credit:'© CambridgeBayWeather / CC BY-SA 3.0',emoji:'🌲',berths:500,maxLen:80,depth:7,price:'$40',unit:'/night',rating:'★★★★☆',ratingN:4.3,rev:145,lat:43.366,lng:-124.218,type:'full',desc:'Largest natural harbour on the Oregon Coast. Gateway to the Oregon Dunes National Recreation Area.'},
+    {name:'Crescent City Harbor',loc:'Crescent City, CA',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/51/Crescent-city-harbor.jpg) center/cover no-repeat',credit:'© Longhair / CC BY-SA 3.0',emoji:'🌲',berths:380,maxLen:60,depth:6,price:'$38',unit:'/night',rating:'★★★★☆',ratingN:4.4,rev:112,lat:41.745,lng:-124.196,type:'sailing',desc:'Last California harbour before the Oregon border. Tsunami-resilient floating dock system. Redwood forest backdrop.'},
+    {name:'Eureka City Marina',loc:'Eureka, CA',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/51/Crescent-city-harbor.jpg) center/cover no-repeat',credit:'© Longhair / CC BY-SA 3.0',emoji:'🦀',berths:400,maxLen:65,depth:7,price:'$42',unit:'/night',rating:'★★★★☆',ratingN:4.3,rev:98,lat:40.800,lng:-124.163,type:'full',desc:'Humboldt Bay gateway — largest bay between San Francisco and Coos Bay. Dungeness crab country.'},
+    {name:'San Francisco Marina & Pier 39',loc:'San Francisco, CA',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/0c/GoldenGateBridge-001.jpg) center/cover no-repeat',credit:'© Rich Niewiroski Jr. / CC BY 2.5',emoji:'🌉',berths:700,maxLen:100,depth:10,price:'$145',unit:'/night',rating:'★★★★★',ratingN:4.7,rev:489,lat:37.808,lng:-122.413,type:'full',desc:'Iconic San Francisco Bay setting with Golden Gate views. Sea lion colony at Pier 39. World-class sailing conditions.'},
+    {name:'Sausalito Yacht Harbor',loc:'Sausalito, CA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/0c/GoldenGateBridge-001.jpg) center/cover no-repeat',credit:'© Rich Niewiroski Jr. / CC BY 2.5',emoji:'⛵',berths:1200,maxLen:80,depth:8,price:'$115',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:367,lat:37.857,lng:-122.479,type:'sailing',desc:'Bohemian waterfront town directly across the Golden Gate. Legendary sailing community, houseboat colony, and artist studios.'},
+    {name:'Monterey Harbor',loc:'Monterey, CA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/6/6e/MontereyBayAquriumFromAbove.jpg) center/cover no-repeat',credit:'© SounderBruce / CC BY-SA 4.0',emoji:'🦦',berths:425,maxLen:70,depth:7,price:'$75',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:312,lat:36.600,lng:-121.893,type:'sailing',desc:'Steps from the Monterey Bay Aquarium and Cannery Row. Whale watching, sea otters, and spectacular Monterey Bay NMS.'},
+    {name:'Santa Barbara Harbor',loc:'Santa Barbara, CA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/ae/Santa_Barbara_coastline.jpg) center/cover no-repeat',credit:'© Carol Highsmith / Public Domain',emoji:'🌴',berths:1100,maxLen:80,depth:8,price:'$95',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:421,lat:34.407,lng:-119.687,type:'full',desc:'American Riviera harbour. Channel Islands gateway. Mediterranean climate, Spanish colonial architecture, pristine beaches.'},
+    {name:'Marina del Rey',loc:'Los Angeles, CA',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/2/2a/Marina_Del_Rey%2C_Playa_Vista%2C_and_Los_Angeles_International_Airport.jpg) center/cover no-repeat',credit:'© Alfred Twu / CC0 Public Domain',emoji:'🌞',berths:5000,maxLen:120,depth:10,price:'$180',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:512,lat:33.98,lng:-118.45,type:'full',desc:'Largest man-made small craft harbour in North America. 5,000 berths, 6 km of waterways in LA.'},
+    {name:'Long Beach Shoreline Marina',loc:'Long Beach, CA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/d3/Rainbow_Harbor_Lb_%28251594109%29.jpeg) center/cover no-repeat',credit:'© Terry Lucas / CC BY 3.0',emoji:'🏙️',berths:1800,maxLen:100,depth:10,price:'$95',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:298,lat:33.762,lng:-118.189,type:'superyacht',desc:'1,800 berths in Long Beach harbour. Adjacent to the Queen Mary. Home of the prestigious Long Beach Grand Prix waterfront.'},
+    {name:'Dana Point Harbor',loc:'Dana Point, CA',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/9/9c/Dana-Point-California.jpg) center/cover no-repeat',credit:'© Bbqnerd / CC BY-SA 4.0',emoji:'🐬',berths:2500,maxLen:80,depth:8,price:'$80',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:345,lat:33.461,lng:-117.696,type:'charter',desc:'2,500 berths in OC\'s premier harbour. Whale and dolphin watching capital. Festive holiday harbour.'},
+    {name:'Oceanside Harbor',loc:'Oceanside, CA',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/1/1f/Sunset_Oceanside_Harbor_%2852547236325%29.jpg) center/cover no-repeat',credit:'© John D. / CC BY 2.0',emoji:'🏄',berths:950,maxLen:60,depth:6,price:'$60',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:234,lat:33.215,lng:-117.393,type:'sailing',desc:'North San Diego County\'s largest harbour. Surf culture gateway, close to Camp Pendleton and Catalina Island.'},
+    {name:'Shelter Island Marina',loc:'San Diego, CA',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/b/b9/San_Diego_skyline_at_dusk_in_November_2013.jpg) center/cover no-repeat',credit:'© Sven Manguard / CC BY-SA 4.0',emoji:'⛵',berths:1400,maxLen:130,depth:12,price:'$130',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:412,lat:32.720,lng:-117.227,type:'superyacht',desc:'San Diego Bay\'s top superyacht address. Year-round perfect weather. 15 minutes from the Mexican border. Top refit facilities.'},
+    {name:'Coronado Cays Yacht Club',loc:'Coronado, CA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/9/92/Aerial_-_looking_across_North_San_Diego_Bay_to_Coronado_03.jpg) center/cover no-repeat',credit:'© Joe Mabel / CC BY 3.0',emoji:'🌅',berths:600,maxLen:80,depth:8,price:'$110',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:189,lat:32.622,lng:-117.150,type:'full',desc:'Exclusive residential island marina opposite San Diego Bay. Hotel del Coronado at your doorstep.'},
+    // ── EAST COAST — NEW ENGLAND ─────────────────────────────────────
+    {name:'Hinckley Yacht Services',loc:'Southwest Harbor, ME',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/08/Southwest_Harbor%2C_Near_Acadia_National_Park%2C_Maine_-_68551211.jpg) center/cover no-repeat',credit:'© Ken Lund / CC BY-SA 2.0',emoji:'🦞',berths:200,maxLen:120,depth:12,price:'$145',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:189,lat:44.285,lng:-68.326,type:'superyacht',desc:'Home of the legendary Hinckley boatyard. Acadia National Park gateway. Lobster boat-filled harbour on Mount Desert Island.'},
+    {name:'Portland, Maine Waterfront',loc:'Portland, ME',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/b/b6/Yacht_Regatta%2C_Portland_Harbor%2C_Portland%2C_Maine_%2869898%29.jpg) center/cover no-repeat',credit:'© Tichnor Brothers / Public Domain',emoji:'🦞',berths:350,maxLen:80,depth:8,price:'$85',unit:'/night',rating:'★★★★★',ratingN:4.7,rev:312,lat:43.657,lng:-70.249,type:'sailing',desc:'Maine\'s most vibrant harbour city. Old Port district, farm-to-table dining, working fishing fleet and yachting hub.'},
+    {name:'Rockland Harbour',loc:'Rockland, ME',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/6/6d/Rockland_Breakwater_Light_Maine.jpg) center/cover no-repeat',credit:'© Terri Gostola / CC BY-SA 3.0',emoji:'⛵',berths:280,maxLen:80,depth:8,price:'$65',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:198,lat:44.103,lng:-69.107,type:'sailing',desc:'Schooner capital of America. Home of the Windjammer fleet and North Atlantic Blues Festival. Penobscot Bay gateway.'},
+    {name:'Booth Bay Harbor',loc:'Boothbay Harbor, ME',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/e/e7/Boothbay_Harbor%2C_Maine%2C_2024.jpg) center/cover no-repeat',credit:'© Bigmacthealmanac / CC0',emoji:'🏔️',berths:400,maxLen:80,depth:8,price:'$75',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:245,lat:43.854,lng:-69.629,type:'sailing',desc:'Boothbay Harbor — New England\'s most picturesque sailing village. Lobster suppers, working waterfront, 100+ year tradition.'},
+    {name:'Newport Harbor',loc:'Newport, RI',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/5f/Newport_Rhode_Island_Sunset.jpg) center/cover no-repeat',credit:'© James Willamor / CC BY-SA 2.0',emoji:'🏆',berths:2000,maxLen:100,depth:10,price:'$185',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:567,lat:41.490,lng:-71.327,type:'superyacht',desc:'America\'s sailing capital. Home of the America\'s Cup legacy, Newport Folk Festival and the Gilded Age mansions.'},
+    {name:'Block Island Great Salt Pond',loc:'Block Island, RI',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/7/78/Old_Harbor%2C_New_Shoreham%2C_Block_Island%2C_Rhode_Island.jpg) center/cover no-repeat',credit:'© Doodybutch / CC BY-SA 4.0',emoji:'🏝️',berths:900,maxLen:80,depth:8,price:'$65',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:378,lat:41.186,lng:-71.571,type:'sailing',desc:'Summer sailing mecca. 900 moorings in a protected pond. 17 miles offshore — a classic New England anchorage.'},
+    {name:'Marblehead Harbor',loc:'Marblehead, MA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/0f/Boston_-_panoramio_%281%29.jpg) center/cover no-repeat',credit:'© Sébastien Bertrand / CC BY 2.0',emoji:'⚓',berths:1800,maxLen:80,depth:8,price:'$115',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:289,lat:42.504,lng:-70.841,type:'sailing',desc:'The Yachting Capital of America — some say. Historic harbour where the American flag was first raised at sea in 1777.'},
+    {name:'Boston Harbor Marina',loc:'Boston, MA',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/f/f0/Boston_Waterfront_Marina%2C_Massachusetts_%28493572%29_%2811061938854%29.jpg) center/cover no-repeat',credit:'© Robert Linsdell / CC BY 2.0',emoji:'🦞',berths:400,maxLen:120,depth:12,price:'$195',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:312,lat:42.355,lng:-71.049,type:'superyacht',desc:'Premier Boston Harbour superyacht marina. Walk to Faneuil Hall, North End and Paul Revere\'s house. USS Constitution nearby.'},
+    {name:'Nantucket Boat Basin',loc:'Nantucket, MA',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/a7/Sunset_Fan_Pier_Marina_Vessels_in_Boston_Harbor.jpg) center/cover no-repeat',credit:'© EgorovaSvetlana / CC BY-SA 4.0',emoji:'🐋',berths:240,maxLen:250,depth:15,price:'$395',unit:'/night',rating:'★★★★★',ratingN:5.0,rev:198,lat:41.282,lng:-70.099,type:'superyacht',desc:'America\'s most exclusive summer harbour. Peak-season waitlist essential. Old whaling town now superyacht playground.'},
+    {name:'Vineyard Haven',loc:'Martha\'s Vineyard, MA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/0f/Boston_-_panoramio_%281%29.jpg) center/cover no-repeat',credit:'© Sébastien Bertrand / CC BY 2.0',emoji:'🍇',berths:500,maxLen:80,depth:8,price:'$135',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:289,lat:41.454,lng:-70.613,type:'sailing',desc:'Martha\'s Vineyard\'s main harbour. Presidential favourite — the Obamas, Clintons and Kennedys all summered here.'},
+    {name:'Greenwich Harbor',loc:'Greenwich, CT',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/0f/Boston_-_panoramio_%281%29.jpg) center/cover no-repeat',credit:'© Sébastien Bertrand / CC BY 2.0',emoji:'🏌️',berths:600,maxLen:80,depth:8,price:'$155',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:198,lat:41.018,lng:-73.628,type:'sailing',desc:'Connecticut Gold Coast sailing hub. Hedge fund capital meets yacht club culture. Long Island Sound racing grounds.'},
+    {name:'Cold Spring Harbor',loc:'Long Island, NY',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/e/e2/Cold_Spring_Harbor_01A_%289353983577%29_%282%29.jpg) center/cover no-repeat',credit:'© Joe Mabel / CC BY-SA 3.0',emoji:'🦢',berths:380,maxLen:60,depth:6,price:'$85',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:145,lat:40.869,lng:-73.451,type:'sailing',desc:'Historic Long Island Sound village harbour. Whaling-era waterfront, renowned yacht club. Gatsby country.'},
+    {name:'North Cove Marina',loc:'Manhattan, New York, NY',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/0f/Boston_-_panoramio_%281%29.jpg) center/cover no-repeat',credit:'© Sébastien Bertrand / CC BY 2.0',emoji:'🗽',berths:120,maxLen:250,depth:14,price:'$450',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:178,lat:40.712,lng:-74.017,type:'superyacht',desc:'The only full-service marina in Manhattan. World Trade Center at your stern. Statue of Liberty views. Utterly unique.'},
+    {name:'Montauk Yacht Club',loc:'Montauk, NY',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/c/ce/Viking_Landing%3B_Montauk_Harbor_Loop-1.jpg) center/cover no-repeat',credit:'© DanTD / CC BY-SA 4.0',emoji:'🐟',berths:232,maxLen:200,depth:14,price:'$275',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:234,lat:41.064,lng:-71.957,type:'superyacht',desc:'The Hamptons\' premier superyacht destination. Deep-water berths, world-class sport fishing, exclusive Hamptons lifestyle.'},
+    // ── EAST COAST — MID-ATLANTIC ────────────────────────────────────
+    {name:'Atlantic City Marina',loc:'Atlantic City, NJ',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/1/13/2025-04-17_15_33_58_View_south_from_the_north_corner_of_the_Senator_Frank_S._Farley_State_Marina_in_Atlantic_City%2C_Atlantic_County%2C_New_Jersey.jpg) center/cover no-repeat',credit:'© Famartin / CC BY-SA 4.0',emoji:'🎰',berths:640,maxLen:200,depth:14,price:'$185',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:189,lat:39.355,lng:-74.432,type:'superyacht',desc:'Casino resort marina in the heart of the Boardwalk. 200m+ berths available. Deep-water access and full refit services.'},
+    {name:'Chesapeake Bay Maritime Museum Marina',loc:'St. Michaels, MD',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/1/12/Chesapeake_Bay_Bridge_Aerial.jpg) center/cover no-repeat',credit:'© Postdlf / CC BY-SA 3.0',emoji:'🦀',berths:190,maxLen:80,depth:7,price:'$75',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:267,lat:38.788,lng:-76.226,type:'sailing',desc:'Heart of the Chesapeake Bay sailing world. Skipjacks, crab feasts, and colonial waterfront town charm.'},
+    {name:'Annapolis City Dock',loc:'Annapolis, MD',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/3/3c/POWER_BOAT_UNDERWAY_IN_ANNAPOLIS_HARBOR_-_NARA_-_546912.jpg) center/cover no-repeat',credit:'© Jim Pickerell / Public Domain',emoji:'⚓',berths:1200,maxLen:100,depth:10,price:'$165',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:478,lat:38.978,lng:-76.488,type:'sailing',desc:'The Sailing Capital of the US — home of the US Naval Academy. October Sailboat Show draws 50,000 sailors yearly.'},
+    {name:'Hampton Roads Marina',loc:'Hampton, VA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/3/3a/Sunset_at_Hampton_University_Waterfront.jpg) center/cover no-repeat',credit:'© Anastasiia Romanova / CC BY 4.0',emoji:'⚓',berths:800,maxLen:120,depth:12,price:'$95',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:234,lat:37.038,lng:-76.350,type:'full',desc:'Chesapeake Bay entrance port. ICW starting point heading south. 800 berths with full services in the historic Hampton Roads.'},
+    // ── EAST COAST — SOUTH ──────────────────────────────────────────
+    {name:'Beaufort, NC Waterfront',loc:'Beaufort, NC',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/dc/Front_St_Circle_Beaufort_%2834340494486%29.jpg) center/cover no-repeat',credit:'© Tim Evanson / CC BY-SA 2.0',emoji:'🐎',berths:500,maxLen:80,depth:8,price:'$55',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:198,lat:34.721,lng:-76.665,type:'sailing',desc:'ICW and offshore passage stopover. Wild horses visible on Shackleford Banks. Cape Lookout National Seashore nearby.'},
+    {name:'Charleston City Marina',loc:'Charleston, SC',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/8/83/Charleston_Marina_-_panoramio.jpg) center/cover no-repeat',credit:'© RJ Matthews / CC BY-SA 3.0',emoji:'🏛️',berths:450,maxLen:120,depth:12,price:'$125',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:378,lat:32.777,lng:-79.937,type:'full',desc:'Antebellum jewel on the ICW. Fort Sumter visible from the marina. Extraordinary food scene, cobblestoned streets, garden tours.'},
+    {name:'Savannah City Marina',loc:'Savannah, GA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/8/81/Georgia%2C_Savannah%2C_waterfront_-_NARA_-_533423.jpg) center/cover no-repeat',credit:'© George N. Barnard / Public Domain',emoji:'🌳',berths:350,maxLen:80,depth:8,price:'$85',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:289,lat:32.080,lng:-81.096,type:'full',desc:'Haunted, historic and utterly beautiful. Savannah\'s live oaks draped in Spanish moss meet the ICW waterfront.'},
+    {name:'Pier 66 Marina',loc:'Fort Lauderdale, FL',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/5d/Skyline_of_Fort_Lauderdale%2C_Nov-15.jpg) center/cover no-repeat',credit:'© KeanoManu / CC BY-SA 4.0',emoji:'🛥️',berths:165,maxLen:130,depth:12,price:'$340',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:289,lat:26.118,lng:-80.107,type:'superyacht',desc:'$1B redevelopment at the Yachting Capital of the World. Fort Lauderdale International Boat Show home base.'},
+    {name:'Sunset Harbour Marina',loc:'Miami Beach, FL',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/9/98/Miami_Beach_Marina_from_path.jpeg) center/cover no-repeat',credit:'© Dough4872 / CC BY-SA 4.0',emoji:'🌴',berths:320,maxLen:120,depth:10,price:'$285',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:412,lat:25.786,lng:-80.198,type:'superyacht',desc:'Miami\'s hottest marina address. Wynwood art district and South Beach clubs accessible by tender. Year-round warm waters.'},
+    {name:'Key West Bight Marina',loc:'Key West, FL',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/08/Key_West_-_Harbor_%283886264128%29.jpg) center/cover no-repeat',credit:'© Roger W / CC BY-SA 2.0',emoji:'🌅',berths:380,maxLen:150,depth:10,price:'$195',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:378,lat:24.557,lng:-81.807,type:'superyacht',desc:'The end of the road — and the beginning of the Caribbean. Hemingway\'s haunt, Duval Street, the southernmost point in the continental US.'},
+    {name:'Tampa Bay Marina',loc:'Tampa, FL',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/5a/Downtown_Tampa_from_Curtis_Hixon_Park.png) center/cover no-repeat',credit:'© FightingRaven531 / CC BY 3.0',emoji:'🐬',berths:700,maxLen:100,depth:10,price:'$125',unit:'/night',rating:'★★★★☆',ratingN:4.6,rev:298,lat:27.945,lng:-82.457,type:'full',desc:'Tampa Bay\'s premier waterfront marina. Gateway to the Gulf Coast and the Intercoastal Waterway. Full services, warm water year-round.'},
+    // ── GULF COAST ───────────────────────────────────────────────────
+    {name:'New Orleans City Marina',loc:'New Orleans, LA',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/5d/Skyline_of_Fort_Lauderdale%2C_Nov-15.jpg) center/cover no-repeat',credit:'© KeanoManu / CC BY-SA 4.0',emoji:'🎷',berths:450,maxLen:80,depth:8,price:'$75',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:234,lat:29.949,lng:-90.063,type:'full',desc:'Jazz city gateway marina on Lake Pontchartrain. Mississippi River access. Mardi Gras, beignets, and the most unique city in America.'},
+    {name:'Galveston Yacht Basin',loc:'Galveston, TX',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/5/5d/Skyline_of_Fort_Lauderdale%2C_Nov-15.jpg) center/cover no-repeat',credit:'© KeanoManu / CC BY-SA 4.0',emoji:'🤠',berths:750,maxLen:80,depth:8,price:'$65',unit:'/night',rating:'★★★★☆',ratingN:4.4,rev:189,lat:29.304,lng:-94.791,type:'full',desc:'Texas Gulf Coast sailing hub. Starting point for offshore Mexico passages. Victorian architecture meets beach culture.'}
+  ]},
+  ca:{flag:'🇨🇦',name:'Canada',region:'Pacific / Atlantic / Great Lakes',lat:56.1,lng:-106.3,zoom:4,marinaCount:89,berths:22000,maxLen:100,topRegion:'BC & Ontario',currency:'CAD $',season:'May–Oct. (BC year-round south)',regulations:'TC Small Vessel regulations. VHF Ch.16.',highlights:['BC Inside Passage','Georgian Bay','Nova Scotia'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🦅 Wildlife'],desc:'Canada offers world-class cruising from the Pacific\'s Inside Passage to the Great Lakes and Atlantic provinces. The BC coast rivals Norway for dramatic fjord scenery.',marinas:[
+    // ── BC — WEST COAST ─────────────────────────────────────────────
+    {name:'Coal Harbour Marina',loc:'Vancouver, BC',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/b/b8/Vancouver_night_from_air_2016.jpg) center/cover no-repeat',credit:'© Jeffery Simpson / CC BY-SA 2.0',emoji:'🏔️',berths:480,maxLen:100,depth:10,price:'CA$145',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:312,lat:49.291,lng:-123.120,type:'superyacht',desc:'Vancouver\'s premier downtown marina at the base of the North Shore mountains. Stanley Park, Gastown and Coal Harbour Seaplane terminal steps away.'},
+    {name:'False Creek Harbour Authority',loc:'Vancouver, BC',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/ab/View_from_False_Creek_Harbour_to_Burrard_Peninsula_in_downtown_Vancouver.jpg) center/cover no-repeat',credit:'© Marc-Lautenbacher / CC BY-SA 4.0',emoji:'🌉',berths:800,maxLen:60,depth:6,price:'CA$95',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:421,lat:49.271,lng:-123.133,type:'sailing',desc:'Heart of False Creek — Granville Island market, science centre and kayaking hub. Urban sailing at its finest.'},
+    {name:'Thunderbird Marina',loc:'Richmond, BC',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/b/b8/Vancouver_night_from_air_2016.jpg) center/cover no-repeat',credit:'© Jeffery Simpson / CC BY-SA 2.0',emoji:'⛵',berths:650,maxLen:80,depth:8,price:'CA$75',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:198,lat:49.190,lng:-123.183,type:'full',desc:'South Fraser River marina with full service boatyard. Convenient for Gulf Island departures. 650 berths, travel lift.'},
+    {name:'Sidney North Saanich Marina',loc:'Sidney, BC',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/07/Victoria_BC_inner_harbour.jpg) center/cover no-repeat',credit:'© D. Gordon E. Robertson / CC BY-SA 3.0',emoji:'🦅',berths:550,maxLen:80,depth:8,price:'CA$80',unit:'/night',rating:'★★★★★',ratingN:4.7,rev:267,lat:48.651,lng:-123.396,type:'sailing',desc:'Gateway to the Gulf Islands and San Juan Islands. Whale watching hub. Sidney-by-the-Sea — BC\'s book town.'},
+    {name:'Victoria Harbour Authority',loc:'Victoria, BC',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/07/Victoria_BC_inner_harbour.jpg) center/cover no-repeat',credit:'© D. Gordon E. Robertson / CC BY-SA 3.0',emoji:'🏛️',berths:1200,maxLen:100,depth:10,price:'CA$115',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:489,lat:48.424,lng:-123.369,type:'full',desc:'Canada\'s most beautiful inner harbour. Parliament buildings lit at night. Afternoon tea at the Empress. Whale watching, Butchart Gardens.'},
+    {name:'Port Alberni Harbour Quay',loc:'Port Alberni, BC',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/df/Small_harbour_tug_in_Port_Alberni.JPG) center/cover no-repeat',credit:'© Daderot / CC0 Public Domain',emoji:'🐟',berths:300,maxLen:60,depth:6,price:'CA$45',unit:'/night',rating:'★★★★☆',ratingN:4.4,rev:134,lat:49.234,lng:-124.805,type:'full',desc:'Deep into Vancouver Island\'s Alberni Inlet. World-famous salmon fishing. Gateway to Barkley Sound and the Broken Group Islands.'},
+    {name:'Comox Municipal Marina',loc:'Comox, BC',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/07/Victoria_BC_inner_harbour.jpg) center/cover no-repeat',credit:'© D. Gordon E. Robertson / CC BY-SA 3.0',emoji:'🏔️',berths:420,maxLen:60,depth:6,price:'CA$50',unit:'/night',rating:'★★★★☆',ratingN:4.5,rev:167,lat:49.673,lng:-124.926,type:'sailing',desc:'Comox Valley\'s working waterfront with Comox Glacier views. Halfway up Vancouver Island — Inside Passage departure point.'},
+    {name:'Campbell River Marina',loc:'Campbell River, BC',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/7/7c/Campbell_River%2C_BC%2C_Canada_-_panoramio.jpg) center/cover no-repeat',credit:'© Larry LaRose / CC BY-SA 3.0',emoji:'🐋',berths:700,maxLen:80,depth:8,price:'CA$65',unit:'/night',rating:'★★★★★',ratingN:4.7,rev:289,lat:50.016,lng:-125.245,type:'full',desc:'Salmon fishing capital of the world. Discovery Passage — threshold of the true Inside Passage. Orca pods pass daily in summer.'},
+    {name:'Port McNeil Harbour',loc:'Port McNeill, BC',badge:'',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/07/The_harbor_of_Prince_Rupert_-_panoramio.jpg) center/cover no-repeat',credit:'© Kira Picabo / CC BY 3.0',emoji:'🐻',berths:300,maxLen:60,depth:6,price:'CA$38',unit:'/night',rating:'★★★★☆',ratingN:4.4,rev:112,lat:50.585,lng:-127.089,type:'full',desc:'Deep Northern Vancouver Island. Alert Bay and the Namgis First Nation cultural centre just across the strait. Bear country.'},
+    {name:'Prince Rupert Yacht Club',loc:'Prince Rupert, BC',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/07/The_harbor_of_Prince_Rupert_-_panoramio.jpg) center/cover no-repeat',credit:'© Kira Picabo / CC BY 3.0',emoji:'🦅',berths:350,maxLen:80,depth:8,price:'CA$55',unit:'/night',rating:'★★★★★',ratingN:4.7,rev:156,lat:54.319,lng:-130.326,type:'full',desc:'Northern BC\'s main marina. Alaska ferry and Inside Passage terminus. Spirit bears, humpback whales, and dramatic fjords.'},
+    // ── ATLANTIC CANADA ──────────────────────────────────────────────
+    {name:'Halifax Waterfront Marina',loc:'Halifax, NS',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/a/ae/Halifax_waterfront.jpg) center/cover no-repeat',credit:'© Jeangagnon / CC BY-SA 4.0',emoji:'🦞',berths:450,maxLen:80,depth:8,price:'CA$85',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:267,lat:44.645,lng:-63.576,type:'sailing',desc:'Historic Atlantic Canada gateway. Busiest harbour in Atlantic Canada. Bluenose II schooner, Citadel Hill, and legendary East Coast hospitality.'},
+    {name:'Lunenburg Harbour',loc:'Lunenburg, NS',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/0/06/Kanada_%E2%80%93_Novo_Scotia_%E2%80%93_Lunenburg_-_Harbor_-_panoramio.jpg) center/cover no-repeat',credit:'© Edgar El / CC BY 3.0',emoji:'⛵',berths:200,maxLen:60,depth:6,price:'CA$55',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:189,lat:44.377,lng:-64.298,type:'sailing',desc:'UNESCO World Heritage Site. Home port of the Bluenose and Bluenose II schooners. Colourful wooden buildings overlooking a stunning harbour.'}
   ]},
   au:{flag:'🇦🇺',name:'Australia',region:'Pacific / Indian Ocean',lat:-25.3,lng:133.8,zoom:4,marinaCount:112,berths:24000,maxLen:100,topRegion:'Sydney & Whitsundays',currency:'AUD $',season:'Year-round.',regulations:'AMSA regulations.',highlights:['Sydney Harbour','Whitsundays','Queensland'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🦘 Wildlife'],desc:'Australia offers spectacular sailing from Sydney Harbour to the Great Barrier Reef and Whitsunday Islands.',marinas:[
     {name:'Rozelle Bay Marina',loc:'Sydney',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/d4/Sydney%28from_air%29_V2.jpg) center/cover no-repeat',credit:'© Merbabu / Public Domain',emoji:'🦜',berths:270,maxLen:80,depth:8,price:'A$195',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:178,lat:-33.863,lng:151.18,type:'superyacht',desc:'Premium Sydney Harbour marina minutes from the Opera House.'},
@@ -957,7 +1107,8 @@ const COUNTRIES={
     {name:'Aker Brygge Marina',loc:'Oslo',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/b/b8/Oslo_Aker_Brygge_2005_June_19.jpg) center/cover no-repeat',credit:'© Chris Nyborg / CC BY-SA 3.0',emoji:'🏔️',berths:380,maxLen:50,depth:6,price:'kr 650',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:178,lat:59.908,lng:10.726,type:'full',desc:'Oslo\'s premier urban marina with access to the stunning Oslofjord.'}
   ]},
   mc:{flag:'🇲🇨',name:'Monaco',region:'French Riviera',lat:43.74,lng:7.43,zoom:13,marinaCount:14,berths:2800,maxLen:200,topRegion:'Port Hercule',currency:'EUR €',season:'Year-round.',regulations:'Port Captaincy VHF Ch.12.',highlights:['Port Hercule','Grand Prix','Yacht Show'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🚁 Helipad','🎰 Casino'],desc:'Monaco is the world\'s most prestigious yachting destination. Port Hercule is the year-round home of the Monaco Grand Prix waterfront.',marinas:[
-    {name:'Port Hercule',loc:'Monaco',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/da/Panorama_von_Monaco-La_Turbie.jpg) center/cover no-repeat',credit:'© Tobi 87 / CC BY-SA 3.0',emoji:'🎰',berths:700,maxLen:200,depth:30,price:'€950',unit:'/night',rating:'★★★★★',ratingN:5.0,rev:88,lat:43.731,lng:7.425,type:'superyacht',desc:'World\'s most glamorous marina. Host to Monaco Grand Prix and Monaco Yacht Show.'}
+    {name:'Port Hercule',loc:'Monaco',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/da/Panorama_von_Monaco-La_Turbie.jpg) center/cover no-repeat',credit:'© Tobi 87 / CC BY-SA 3.0',emoji:'🎰',berths:700,maxLen:200,depth:30,price:'€950',unit:'/night',rating:'★★★★★',ratingN:5.0,rev:88,lat:43.731,lng:7.425,type:'superyacht',desc:'World\'s most glamorous marina. Host to Monaco Grand Prix and Monaco Yacht Show. Deepest port on the French Riviera at 30m.'},
+    {name:'Port de Fontvieille',loc:'Monaco — Fontvieille',badge:'prem',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/d/da/Panorama_von_Monaco-La_Turbie.jpg) center/cover no-repeat',credit:'© Tobi 87 / CC BY-SA 3.0',emoji:'🏭',berths:350,maxLen:60,depth:5,price:'€480',unit:'/night',rating:'★★★★★',ratingN:4.8,rev:67,lat:43.728,lng:7.414,type:'sailing',desc:'Quieter industrial port quarter of Monaco. 350 berths in residential Fontvieille. Less congested than Hercules.'}
   ]},
   sg:{flag:'🇸🇬',name:'Singapore',region:'Southeast Asia',lat:1.35,lng:103.82,zoom:10,marinaCount:21,berths:3200,maxLen:100,topRegion:'Sentosa & Marina Bay',currency:'SGD $',season:'Year-round.',regulations:'MPA clearance required.',highlights:['Marina Bay','Sentosa Cove'],amenities:['⛽ Fuel','🔧 Refit','📡 WiFi','🏊 Pool'],desc:'Singapore is Southeast Asia\'s premier yachting hub, gateway for yachts cruising the region.',marinas:[
     {name:'ONE°15 Marina Sentosa',loc:'Sentosa Island',badge:'feat',bg:'linear-gradient(135deg,rgba(10,22,40,0.45),rgba(13,32,68,0.35)), url(https://upload.wikimedia.org/wikipedia/commons/1/1e/The_Residences_at_W_Singapore%2C_Sentosa_Cove%2C_Singapore_-_20110912.jpg) center/cover no-repeat',credit:'© Stankn / CC BY-SA 3.0',emoji:'🦁',berths:215,maxLen:100,depth:6,price:'SGD$380',unit:'/night',rating:'★★★★★',ratingN:4.9,rev:178,lat:1.247,lng:103.829,type:'full',desc:'Asia\'s most awarded marina. Five Gold Anchor with impeccable service.'}
@@ -1027,18 +1178,146 @@ Object.entries(COUNTRIES).forEach(([cid,cd])=>{
   cd.marinas.forEach(m=>ALL_MARINAS.push({...m,countryId:cid,countryName:cd.name,countryFlag:cd.flag}));
 });
 
+
+/* =====================================================================
+   WORLD REGIONS DATA
+   ===================================================================== */
+const REGIONS = [
+  {
+    id:'med',
+    name:'Mediterranean',
+    emoji:'🌊',
+    badge:'Most Popular',
+    countries:164,
+    marinas:3200,
+    desc:'French Riviera, Italy, Greece, Croatia, Spain & more',
+    bg:'linear-gradient(135deg,rgba(10,22,40,0.5),rgba(13,32,68,0.4)), url(https://upload.wikimedia.org/wikipedia/commons/9/93/Port_of_Cannes.jpg) center/cover no-repeat',
+    countryIds:['fr','mc','es','it','gr','hr','tr','pt','mt']
+  },
+  {
+    id:'caribbean',
+    name:'Caribbean',
+    emoji:'🌴',
+    badge:'Charter Paradise',
+    countries:28,
+    marinas:420,
+    desc:'BVI, Antigua, St. Maarten, Grenada, Barbados & more',
+    bg:'linear-gradient(135deg,rgba(10,22,40,0.5),rgba(13,32,68,0.4)), url(https://upload.wikimedia.org/wikipedia/commons/b/b7/Caribbean_Sea_Grenada.jpg) center/cover no-repeat',
+    countryIds:['bs','bb','bm','vg','pr']
+  },
+  {
+    id:'northern',
+    name:'Northern Europe',
+    emoji:'🏔️',
+    badge:'Fjords & Classics',
+    countries:48,
+    marinas:2800,
+    desc:'Norway, UK, Netherlands, Scandinavia & Baltic',
+    bg:'linear-gradient(135deg,rgba(10,22,40,0.5),rgba(13,32,68,0.4)), url(https://upload.wikimedia.org/wikipedia/commons/b/b8/Oslo_Aker_Brygge_2005_June_19.jpg) center/cover no-repeat',
+    countryIds:['no','gb','nl','dk','se','fi','de','be','ie']
+  },
+  {
+    id:'asia_pacific',
+    name:'Asia Pacific',
+    emoji:'🏯',
+    badge:'Fastest Growing',
+    countries:32,
+    marinas:890,
+    desc:'Singapore, Thailand, Australia, NZ & SE Asia',
+    bg:'linear-gradient(135deg,rgba(10,22,40,0.5),rgba(13,32,68,0.4)), url(https://upload.wikimedia.org/wikipedia/commons/1/1e/The_Residences_at_W_Singapore%2C_Sentosa_Cove%2C_Singapore_-_20110912.jpg) center/cover no-repeat',
+    countryIds:['sg','th','au','nz','my','id','jp','cn','kr','ph','vn','hk']
+  },
+  {
+    id:'middle_east',
+    name:'Middle East & Indian Ocean',
+    emoji:'🕌',
+    badge:'Luxury Frontier',
+    countries:18,
+    marinas:310,
+    desc:'UAE, Oman, Saudi Arabia, Maldives & Seychelles',
+    bg:'linear-gradient(135deg,rgba(10,22,40,0.5),rgba(13,32,68,0.4)), url(https://upload.wikimedia.org/wikipedia/commons/e/e6/Dubai_Marina_Skyline.jpg) center/cover no-repeat',
+    countryIds:['ae','mv','sc','sa','bh']
+  },
+  {
+    id:'americas',
+    name:'The Americas',
+    emoji:'🗽',
+    badge:'Vast & Diverse',
+    countries:42,
+    marinas:4100,
+    desc:'USA, Canada, Brazil, Caribbean & Pacific Coast',
+    bg:'linear-gradient(135deg,rgba(10,22,40,0.5),rgba(13,32,68,0.4)), url(https://upload.wikimedia.org/wikipedia/commons/2/2a/Marina_Del_Rey%2C_Playa_Vista%2C_and_Los_Angeles_International_Airport.jpg) center/cover no-repeat',
+    countryIds:['us','ca','br','mx','pa','cl','co','pr','bs']
+  }
+];
+
+function buildRegionGrid(){
+  const grid = document.getElementById('regionGrid');
+  if(!grid) return;
+  grid.innerHTML = REGIONS.map(r => `
+    <div class="rc" onclick="showRegion('${r.id}')">
+      <div class="rc-bg" style="background:${r.bg}"></div>
+      <div class="rc-overlay"></div>
+      ${r.badge ? `<div class="rc-badge">${r.badge}</div>` : ''}
+      <div class="rc-body">
+        <div class="rc-emoji">${r.emoji}</div>
+        <div class="rc-name">${r.name}</div>
+        <div class="rc-stats">
+          <div class="rc-stat">🌍 ${r.countries} countries</div>
+          <div class="rc-stat">⚓ ${r.marinas.toLocaleString()}+ marinas</div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:5px;">${r.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
+function showRegion(rid){
+  const region = REGIONS.find(r => r.id === rid);
+  if(!region){ alert('Coming soon!'); return; }
+  go('regionCountry');
+  document.getElementById('rcFlag').textContent = region.emoji;
+  document.getElementById('rcName').textContent = region.name;
+  document.getElementById('rcCount').textContent = region.countries + ' countries · ' + region.marinas.toLocaleString() + '+ marinas';
+  document.getElementById('rcBread').innerHTML = `<span onclick="go('home')">Home</span><span onclick="go('regions')">Regions</span><span>${region.name}</span>`;
+
+  // Filter CAR_DATA to this region's countries + show rest as coming soon
+  const regionCids = new Set(region.countryIds);
+  // For this region, prioritise known countries then add all others from CAR_DATA
+  const regionalFirst = CAR_DATA.filter(c => regionCids.has(c.id));
+  const rest = CAR_DATA.filter(c => !regionCids.has(c.id) && !region.countryIds.includes(c.id));
+  // Use all CAR_DATA but mark regional ones as active
+  const combined = [...regionalFirst, ...rest];
+  const half = Math.ceil(combined.length/2);
+  ['rcRow1','rcRow2'].forEach((elId, i) => {
+    const el = document.getElementById(elId);
+    if(!el) return;
+    el.innerHTML = '';
+    const slice = i===0 ? combined.slice(0,half) : combined.slice(half);
+    [...slice,...slice].forEach(c => {
+      const d = document.createElement('div');
+      d.className = 'cc';
+      const active = regionCids.has(c.id);
+      d.innerHTML = `<div class="cc-flag">${c.flag}</div><div class="cc-name">${c.name}</div><div class="cc-n">${c.n} marinas</div>`;
+      if(active && c.id) d.onclick = () => showCountry(c.id);
+      else if(!active) d.style.opacity = '0.45';
+      el.appendChild(d);
+    });
+  });
+}
+
+
 /* =====================================================================
    CAROUSEL
    ===================================================================== */
 const CAR_DATA=[
   {flag:'🇦🇺',name:'Australia',n:112,id:'au'},{flag:'🇦🇹',name:'Austria',n:14},{flag:'🇧🇸',name:'Bahamas',n:38},{flag:'🇧🇭',name:'Bahrain',n:11},
   {flag:'🇧🇧',name:'Barbados',n:9},{flag:'🇧🇪',name:'Belgium',n:28},{flag:'🇧🇲',name:'Bermuda',n:12},{flag:'🇧🇷',name:'Brazil',n:64},
-  {flag:'🇨🇦',name:'Canada',n:89},{flag:'🇨🇱',name:'Chile',n:27},{flag:'🇨🇳',name:'China',n:145},{flag:'🇨🇴',name:'Colombia',n:22},
+  {flag:'🇨🇦',name:'Canada',n:89,id:'ca'},{flag:'🇨🇱',name:'Chile',n:27},{flag:'🇨🇳',name:'China',n:145},{flag:'🇨🇴',name:'Colombia',n:22},
   {flag:'🇭🇷',name:'Croatia',n:82,id:'hr'},{flag:'🇨🇾',name:'Cyprus',n:21},{flag:'🇩🇰',name:'Denmark',n:52},{flag:'🇦🇪',name:'UAE',n:47,id:'ae'},
   {flag:'🇪🇬',name:'Egypt',n:24},{flag:'🇫🇮',name:'Finland',n:44},{flag:'🇫🇷',name:'France',n:187,id:'fr'},{flag:'🇩🇪',name:'Germany',n:96},
   {flag:'🇬🇷',name:'Greece',n:234,id:'gr'},{flag:'🇭🇰',name:'Hong Kong',n:18},{flag:'🇮🇳',name:'India',n:37},{flag:'🇮🇩',name:'Indonesia',n:41},
   {flag:'🇮🇪',name:'Ireland',n:28},{flag:'🇮🇹',name:'Italy',n:241,id:'it'},{flag:'🇯🇵',name:'Japan',n:97},{flag:'🇲🇾',name:'Malaysia',n:38},
-  {flag:'🇲🇻',name:'Maldives',n:22,id:'mv'},{flag:'🇲🇹',name:'Malta',n:19},{flag:'🇲🇽',name:'Mexico',n:52},{flag:'🇲🇨',name:'Monaco',n:14,id:'mc'},
+  {flag:'🇲🇻',name:'Maldives',n:22,id:'mv'},{flag:'🇲🇹',name:'Malta',n:19,id:'mt'},{flag:'🇲🇽',name:'Mexico',n:52},{flag:'🇲🇨',name:'Monaco',n:14,id:'mc'},
   {flag:'🇲🇦',name:'Morocco',n:26},{flag:'🇳🇱',name:'Netherlands',n:62},{flag:'🇳🇿',name:'New Zealand',n:54,id:'nz'},{flag:'🇳🇴',name:'Norway',n:78,id:'no'},
   {flag:'🇵🇦',name:'Panama',n:22},{flag:'🇵🇭',name:'Philippines',n:28},{flag:'🇵🇹',name:'Portugal',n:68,id:'pt'},{flag:'🇵🇷',name:'Puerto Rico',n:19},
   {flag:'🇷🇺',name:'Russia',n:52},{flag:'🇸🇦',name:'Saudi Arabia',n:28},{flag:'🇸🇨',name:'Seychelles',n:13},{flag:'🇸🇬',name:'Singapore',n:21,id:'sg'},
@@ -1122,6 +1401,11 @@ const HOME_MARINAS=[
   {...COUNTRIES.pt.marinas[0],countryFlag:'🇵🇹',countryName:'Portugal',countryId:'pt'},
   {...COUNTRIES.no.marinas[0],countryFlag:'🇳🇴',countryName:'Norway',countryId:'no'},
   {...COUNTRIES.sg.marinas[0],countryFlag:'🇸🇬',countryName:'Singapore',countryId:'sg'},
+  {...COUNTRIES.us.marinas[7],countryFlag:'🇺🇸',countryName:'USA',countryId:'us'},
+  {...COUNTRIES.us.marinas[11],countryFlag:'🇺🇸',countryName:'USA',countryId:'us'},
+  {...COUNTRIES.us.marinas[17],countryFlag:'🇺🇸',countryName:'USA',countryId:'us'},
+  {...COUNTRIES.ca.marinas[4],countryFlag:'🇨🇦',countryName:'Canada',countryId:'ca'},
+  {...COUNTRIES.ca.marinas[7],countryFlag:'🇨🇦',countryName:'Canada',countryId:'ca'},
 ];
 
 function buildHomeMarinaGrid(){
@@ -1245,6 +1529,7 @@ function showCountry(cid){
   if(!cd){alert('More countries coming soon!');return;}
   go('country');
   document.getElementById('chBN').textContent=cd.name;
+  document.querySelector('#countryScreen .chb').innerHTML='<span onclick="go(\'home\')">Home</span> › <span onclick="go(\'regions\')">Regions</span> › <span onclick="go(\'regions\')">' + cd.region + '</span> › <span>' + cd.name + '</span>';
   document.getElementById('chFlag').textContent=cd.flag;
   document.getElementById('chName').innerHTML=cd.name.split(' ').map((w,i,a)=>i===a.length-1?`<em>${w}</em>`:w).join(' ');
   document.getElementById('chSub').textContent=cd.desc;
@@ -1286,7 +1571,8 @@ function showCountry(cid){
    ===================================================================== */
 function go(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(name+'Screen').classList.add('active');
+  const screenEl = document.getElementById(name+'Screen');
+  if(screenEl) screenEl.classList.add('active');
   document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
   const nav=document.getElementById('nav-'+name);
   if(nav) nav.classList.add('active');
@@ -1542,6 +1828,7 @@ function showAdvertiserDashboard(){
 <script>
 // INIT
 buildCarousel();
+  buildRegionGrid();
 buildHomeMarinaGrid();
 </script>
 </body>
